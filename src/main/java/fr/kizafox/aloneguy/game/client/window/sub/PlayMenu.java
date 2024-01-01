@@ -27,7 +27,7 @@ public class PlayMenu extends WindowAbstract{
     protected final EnemyManager enemyManager;
     protected final ItemManager itemManager;
 
-    private final long startTime = System.currentTimeMillis();
+    protected long startTime;
 
     private int mouseY, mouseX;
 
@@ -65,8 +65,10 @@ public class PlayMenu extends WindowAbstract{
         WindowUtils.drawCenteredString(graphics, "Items Count: " + this.itemManager.getItemsCount(), 15, Color.WHITE, 8, 10);
 
         WindowUtils.drawCenteredString(graphics, "Mouse X: " + getMouseX() + " & Mouse Y: " + getMouseY(), 15, Color.BLACK, 2 * 32, 10);
+    }
 
-        this.drawGrid(graphics);
+    public void init(){
+        this.startTime = System.currentTimeMillis();
     }
 
     public void reset() {
