@@ -62,7 +62,6 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
         }
          **/
 
-
         this.gamePanel.getGame().getMainMenu().mousePressed(e);
     }
 
