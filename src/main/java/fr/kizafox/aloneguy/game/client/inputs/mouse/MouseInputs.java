@@ -34,34 +34,6 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
      */
     @Override
     public void mousePressed(MouseEvent e) {
-        /**
-        final Button play = this.gamePanel.getGame().getMainMenu().play;
-        final Button settings = this.gamePanel.getGame().getMainMenu().settings;
-        final Button quit = this.gamePanel.getGame().getMainMenu().quit;
-
-        if(play.isEnabled() && play.isInside(e.getX(), e.getY())){
-            GameState.setStatus(GameState.PLAY);
-            WorldUtils.WorldPlayer.setWorld(WorldUtils.WorldPlayer.WORLD);
-        }else if(settings.isEnabled() && settings.isInside(e.getX(), e.getY())){
-            GameState.setStatus(GameState.SETTINGS);
-        }else if(quit.isEnabled() && quit.isInside(e.getX(), e.getY())){
-            GameState.setStatus(GameState.QUIT);
-            System.exit(0);
-        }
-
-        final Button back = this.gamePanel.getGame().getPauseMenu().back;
-        final Button mainMenu = this.gamePanel.getGame().getPauseMenu().mainMenu;
-        final Button restart = this.gamePanel.getGame().getPauseMenu().restart;
-
-        if(back.isEnabled() && back.isInside(e.getX(), e.getY())){
-            GameState.setStatus(GameState.PLAY);
-        }else if(mainMenu.isEnabled() && mainMenu.isInside(e.getX(), e.getY())){
-            GameState.setStatus(GameState.MENU);
-        }else if(restart.isEnabled() && restart.isInside(e.getX(), e.getY())){
-            this.gamePanel.getGame().getPlayMenu().reset();
-        }
-         **/
-
         this.gamePanel.getGame().getMainMenu().mousePressed(e);
     }
 
