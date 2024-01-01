@@ -61,6 +61,8 @@ public class MainMenu extends WindowAbstract{
                 if(this.isIn(event, button)) {
                     if(button.isMousePressed()){
                         button.applyGameStatus();
+
+                        if(GameState.getCurrentState().equals(GameState.PLAY)) this.game.getPlayMenu().init();
                     }
                 }
             });
