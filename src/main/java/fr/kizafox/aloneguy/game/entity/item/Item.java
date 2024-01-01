@@ -32,6 +32,11 @@ public abstract class Item {
         this.hitBox = new Rectangle2D.Float(x, y, width, height);
     }
 
+    public void setLocation(final float x, final float y){
+        this.setX(x);
+        this.setY(y);
+    }
+
     public void reset() {
         this.setX(this.x);
         this.setY(this.y);
