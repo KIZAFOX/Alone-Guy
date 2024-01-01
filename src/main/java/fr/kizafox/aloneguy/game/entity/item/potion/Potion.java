@@ -18,12 +18,14 @@ public abstract class Potion extends Item {
 
     @Override
     public void update() {
-
     }
 
     @Override
     public void render(Graphics graphics) {
         if(this.isAvailable()){
+            graphics.setColor(new Color(184, 102, 20));
+            graphics.fillRect((int) x + height - 12, (int) y - height + 10, width / 2, height / 2);
+
             graphics.setColor(color);
             graphics.fillOval((int) x, (int) y, width, height);
         }
