@@ -2,18 +2,15 @@ package fr.kizafox.aloneguy.game.client.window.sub;
 
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
-import fr.kizafox.aloneguy.game.entity.enemy.Enemy;
 import fr.kizafox.aloneguy.game.entity.enemy.EnemyManager;
 import fr.kizafox.aloneguy.game.entity.item.ItemManager;
 import fr.kizafox.aloneguy.game.entity.player.Player;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
+import fr.kizafox.aloneguy.game.world.TileManager;
 import fr.kizafox.aloneguy.game.world.WorldCreator;
 
-import javax.swing.*;
 import java.awt.*;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
@@ -21,7 +18,7 @@ public class PlayMenu extends WindowAbstract{
 
     protected final Game game;
 
-    protected final WorldCreator world;
+    protected final TileManager tileManager;
 
     protected final Player player;
     protected final EnemyManager enemyManager;
@@ -29,34 +26,33 @@ public class PlayMenu extends WindowAbstract{
 
     protected long startTime;
 
-    private int mouseY, mouseX;
+    public int mouseY, mouseX;
 
     public PlayMenu(final Game game) {
         this.game = game;
 
-        this.world = new WorldCreator(this.game, WorldCreator.WORLD_MAP, TILES_SIZE, TILES_SIZE);
+        this.tileManager = new TileManager(this.game);
 
-        this.player = new Player((float) GAME_WIDTH / 2, (float) GAME_HEIGHT / 2, TILES_SIZE, TILES_SIZE, 20, Color.BLUE);
+        this.player = new Player(this.game);
         this.enemyManager = new EnemyManager(this.game, this.player);
         this.itemManager = new ItemManager(this.game, this.player );
     }
 
     @Override
     public void update() {
-        this.world.update(this.player);
-        this.enemyManager.getEnemies().keySet().forEach(this.world::update);
-        this.world.update();
-
         this.player.update();
+        /**
         this.enemyManager.update();
         this.itemManager.update();
+         **/
     }
 
     @Override
     public void render(Graphics graphics) {
-        this.world.showMap(this.world.getTiles(), graphics);
+        this.tileManager.render(graphics);
 
         this.player.render(graphics);
+        /**
         this.enemyManager.render(graphics);
         this.itemManager.render(graphics);
 
@@ -65,6 +61,9 @@ public class PlayMenu extends WindowAbstract{
         WindowUtils.drawCenteredString(graphics, "Items Count: " + this.itemManager.getItemsCount(), 15, Color.WHITE, 8, 10);
 
         WindowUtils.drawCenteredString(graphics, "Mouse X: " + getMouseX() + " & Mouse Y: " + getMouseY(), 15, Color.BLACK, 2 * 32, 10);
+
+        this.drawGrid(graphics);
+         **/
     }
 
     public void init(){
@@ -87,8 +86,8 @@ public class PlayMenu extends WindowAbstract{
         return game;
     }
 
-    public WorldCreator getWorld() {
-        return world;
+    public TileManager getTileManager() {
+        return tileManager;
     }
 
     public Player getPlayer() {
@@ -102,6 +101,7 @@ public class PlayMenu extends WindowAbstract{
     public ItemManager getItemManager() {
         return itemManager;
     }
+
 
     public long getStartTime() {
         return startTime;

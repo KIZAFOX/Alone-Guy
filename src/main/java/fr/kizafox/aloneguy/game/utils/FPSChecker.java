@@ -1,20 +1,13 @@
 package fr.kizafox.aloneguy.game.utils;
 
-import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 
 public class FPSChecker implements Runnable{
 
     protected final Game game;
 
-    public static final int
-            MAX_FPS = 144,
-            UPDATES_SET = 200;
-
-    public int
-            frames = 0,
-            currentFPS = 0,
-            updates = 0;
+    private final int MAX_FPS = 144;
+    private final int UPS_SET = 200;
 
     public FPSChecker(final Game game) {
         this.game = game;
@@ -25,38 +18,51 @@ public class FPSChecker implements Runnable{
      */
     @Override
     public void run() {
-        double timePerFrame = 1000000000.0 / MAX_FPS, timePerUpdate = 1000000000.0 / UPDATES_SET;
-        long lastCheck = System.currentTimeMillis(), previousTime = System.nanoTime();
+        double timePerFrame = 1000000000.0 / MAX_FPS, timePerUpdate = 1000000000.0 / UPS_SET;
+
+        long previousTime = System.nanoTime(), lastCheck = System.currentTimeMillis();
+
+        int frames = 0; int updates = 0;
 
         double deltaU = 0, deltaF = 0;
 
-        while (true) {
+        while(true) {
             long currentTime = System.nanoTime();
 
             deltaU += (currentTime - previousTime) / timePerUpdate;
             deltaF += (currentTime - previousTime) / timePerFrame;
             previousTime = currentTime;
 
-            if(deltaU >= 1){
-                game.update();
+            if (deltaU >= 1) {
+                this.game.update();
+                updates++;
                 deltaU--;
             }
 
-            if(deltaF >= 1){
-                game.getGamePanel().repaint();
+            if (deltaF >= 1) {
+                this.game.getGamePanel().repaint();
                 frames++;
                 deltaF--;
             }
 
             if (System.currentTimeMillis() - lastCheck >= 1000) {
                 lastCheck = System.currentTimeMillis();
-                currentFPS = frames;
-                System.out.println("FPS: " + frames + " | UPDATES: " + updates);
+                System.out.println("FPS: " + frames + " | UPS: " + updates);
                 frames = 0;
                 updates = 0;
-
-                System.out.println(GameState.getCurrentState());
             }
         }
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public int getFPS() {
+        return MAX_FPS;
+    }
+
+    public int getUPS() {
+        return UPS_SET;
     }
 }

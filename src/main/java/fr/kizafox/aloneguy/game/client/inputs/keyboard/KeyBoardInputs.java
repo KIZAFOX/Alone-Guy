@@ -42,8 +42,6 @@ public class KeyBoardInputs implements KeyListener {
                 }else {
                     this.gamePanel.getGame().getPlayMenu().getPlayer().keyPressed(e);
                 }
-
-                this.gamePanel.getGame().getPlayMenu().getPlayer().keyPressed(e);
             }
             case SETTINGS -> {
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE) GameState.setStatus(GameState.MENU);
@@ -66,8 +64,6 @@ public class KeyBoardInputs implements KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
-        if(GameState.getCurrentState().equals(GameState.PLAY)){
-            this.gamePanel.getGame().getPlayMenu().getPlayer().keyReleased(e);
-        }
+        this.gamePanel.getGame().getPlayMenu().getPlayer().keyReleased(e);
     }
 }

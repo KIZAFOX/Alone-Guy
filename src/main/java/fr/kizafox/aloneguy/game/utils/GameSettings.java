@@ -19,8 +19,14 @@ public class GameSettings {
     public static final int
             TILES_DEFAULT_SIZE = 32,
             TILES_IN_WIDTH = 26,
-            TILES_IN_HEIGHT = 14,
+            TILES_IN_HEIGHT = 15,
             TILES_SIZE = (int) (TILES_DEFAULT_SIZE * SCALE),
             GAME_WIDTH = TILES_SIZE * TILES_IN_WIDTH,
             GAME_HEIGHT = TILES_SIZE * TILES_IN_HEIGHT;
+
+    public static final int
+            MAX_WORLD_COLUMN = 50,
+            MAX_WORLD_ROW = 50,
+            WORLD_WIDTH = TILES_SIZE * MAX_WORLD_COLUMN,
+            WORLD_HEIGHT = TILES_SIZE * MAX_WORLD_ROW;
 }

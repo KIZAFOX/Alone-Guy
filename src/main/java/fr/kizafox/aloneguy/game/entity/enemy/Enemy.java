@@ -15,8 +15,8 @@ public class Enemy extends Entity {
 
     public static final float BOUNCE_FORCE = 100.0F / 2;
 
-    public Enemy(final Game game, final Player player, float x, float y, int width, int height, double maxHealth, Color color) {
-        super(x, y, width, height, maxHealth, color);
+    public Enemy(final Game game, final Player player, float x, float y, int width, int height, double maxHealth) {
+        super(x, y, width, height, maxHealth);
         this.initHitBox(x, y, width, height);
 
         this.game = game;
@@ -28,8 +28,8 @@ public class Enemy extends Entity {
     @Override
     public void update() {
         if (this.alive) {
-            float dx = player.getX() - x;
-            float dy = player.getY() - y;
+            float dx = player.getWorldX() - worldX;
+            float dy = player.getWorldY() - worldY;
             float distance = (float) Math.sqrt(dx * dx + dy * dy);
 
             if (distance != 0) {
@@ -37,13 +37,13 @@ public class Enemy extends Entity {
                 dy /= distance;
 
                 float reducedSpeed = 0.5f;
-                x += dx * (speed * reducedSpeed);
-                y += dy * (speed * reducedSpeed);
+                worldX += dx * (speed * reducedSpeed);
+                worldY += dy * (speed * reducedSpeed);
             }
 
             if (this.getHealth() <= 0) {
                 if (this.alive) {
-                    Player.experience += 1;
+                    //give exp
                     this.alive = false;
                     this.game.getPlayMenu().getEnemyManager().getEnemies().remove(this);
                 }
@@ -54,11 +54,11 @@ public class Enemy extends Entity {
     @Override
     public void render(Graphics graphics) {
         if (this.alive) {
-            graphics.setColor(color);
-            graphics.fillOval((int) x, (int) y, width, height);
+            graphics.setColor(Color.RED);
+            graphics.fillOval((int) worldX, (int) worldY, width, height);
 
             graphics.setColor(Color.RED);
-            graphics.fillRect((int) x, (int) y - 10, (int) (width * (health / maxHealth)), 5);
+            graphics.fillRect((int) worldX, (int) worldY - 10, (int) (width * (health / maxHealth)), 5);
         }
     }
 

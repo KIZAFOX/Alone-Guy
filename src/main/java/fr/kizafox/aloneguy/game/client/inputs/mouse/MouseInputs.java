@@ -97,6 +97,5 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
 
         this.gamePanel.getGame().getPlayMenu().setMouseX(e.getX());
         this.gamePanel.getGame().getPlayMenu().setMouseY(e.getY());
-
     }
 }

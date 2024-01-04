@@ -26,8 +26,8 @@ public class EnemyManager {
 
         this.player = player;
 
-        this.firstEnemy = new Enemy(this.game, this.player, (float) GAME_WIDTH / 2, (float) GAME_HEIGHT / 2 + 50, TILES_SIZE, TILES_SIZE, 10, Color.RED);
-        this.secondEnemy = new Enemy(this.game, this.player, (float) GAME_WIDTH / 2, (float) GAME_HEIGHT / 2 + 250, TILES_SIZE, TILES_SIZE, 10 * 2, Color.MAGENTA);
+        this.firstEnemy = new Enemy(this.game, this.player, (float) GAME_WIDTH / 2, (float) GAME_HEIGHT / 2 + 50, TILES_SIZE, TILES_SIZE, 10);
+        this.secondEnemy = new Enemy(this.game, this.player, (float) GAME_WIDTH / 2, (float) GAME_HEIGHT / 2 + 250, TILES_SIZE, TILES_SIZE, 10 * 2);
 
         this.enemies = new HashMap<>();
 
@@ -56,24 +56,24 @@ public class EnemyManager {
                 Enemy enemy1 = enemiesArray[i];
                 Enemy enemy2 = enemiesArray[j];
 
-                if (enemy1.isAlive() && enemy2.isAlive() && enemy1.getHitBox().intersects(enemy2.getHitBox())) {
-                    float directionX = enemy1.getX() - enemy2.getX();
-                    float directionY = enemy1.getY() - enemy2.getY();
+                if (enemy1.isAlive() && enemy2.isAlive() && enemy1.getHitBox().intersects(enemy2.getHitBox().getBounds2D())) {
+                    float directionX = enemy1.getWorldX() - enemy2.getWorldX();
+                    float directionY = enemy1.getWorldY() - enemy2.getWorldY();
 
                     float distance = (float) Math.sqrt(directionX * directionX + directionY * directionY);
                     directionX /= distance;
                     directionY /= distance;
 
                     float overlapFactor = 0.1f;
-                    float targetX1 = enemy1.getX() + directionX * overlapFactor;
-                    float targetY1 = enemy1.getY() + directionY * overlapFactor;
-                    float targetX2 = enemy2.getX() - directionX * overlapFactor;
-                    float targetY2 = enemy2.getY() - directionY * overlapFactor;
+                    float targetWorldX1 = enemy1.getWorldX() + directionX * overlapFactor;
+                    float targetWorldY1 = enemy1.getWorldY() + directionY * overlapFactor;
+                    float targetWorldX2 = enemy2.getWorldX() - directionX * overlapFactor;
+                    float targetWorldY2 = enemy2.getWorldY() - directionY * overlapFactor;
 
-                    enemy1.setX(targetX1);
-                    enemy1.setY(targetY1);
-                    enemy2.setX(targetX2);
-                    enemy2.setY(targetY2);
+                    enemy1.setWorldX(targetWorldX1);
+                    enemy1.setWorldY(targetWorldY1);
+                    enemy2.setWorldX(targetWorldX2);
+                    enemy2.setWorldY(targetWorldY2);
                 }
             }
         }
