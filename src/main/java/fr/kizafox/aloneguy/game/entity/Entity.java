@@ -3,16 +3,16 @@ package fr.kizafox.aloneguy.game.entity;
 import fr.kizafox.aloneguy.game.utils.GameSettings;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 public abstract class Entity {
 
     protected float worldX, worldY, speed = 1.5F * GameSettings.SCALE;
     protected int width, height;
     protected double maxHealth, health;
-    protected Rectangle2D.Float hitBox;
+    protected Rectangle hitBox;
 
-    public boolean up, down, left, right;
+    public boolean up, down, left, right, collision = false;
+    public int spriteCounter = 0, spriteNumber = 1;
 
     public Entity(float worldX, float worldY, int width, int height, double maxHealth) {
         this.worldX = worldX;
@@ -28,12 +28,16 @@ public abstract class Entity {
     public abstract void render(final Graphics graphics);
 
     protected void initHitBox(final float x, final float y, final int width, final int height){
-        this.hitBox = new Rectangle2D.Float(x, y, width, height);
+        this.hitBox = new Rectangle((int) x, (int) y, width, height);
     }
 
-    protected void renderHitBox(final Graphics graphics){
+    protected void renderHitBox(Graphics graphics, int screenX, int screenY){
         graphics.setColor(Color.RED);
-        graphics.drawRect((int) this.hitBox.x, (int) this.hitBox.y, (int) this.hitBox.width, (int) this.hitBox.height);
+        graphics.drawRect(screenX + this.hitBox.x, screenY + this.hitBox.y, this.hitBox.width, this.hitBox.height);
+    }
+
+    protected boolean isMoving(){
+        return this.isUp() || this.isDown() || this.isLeft() || this.isRight();
     }
 
     public void teleport(final float x, final float y){
@@ -113,11 +117,11 @@ public abstract class Entity {
         this.setHealth(this.getHealth() - damage);
     }
 
-    public Rectangle2D.Float getHitBox() {
+    public Rectangle getHitBox() {
         return hitBox;
     }
 
-    public void setHitBox(Rectangle2D.Float hitBox) {
+    public void setHitBox(Rectangle hitBox) {
         this.hitBox = hitBox;
     }
 

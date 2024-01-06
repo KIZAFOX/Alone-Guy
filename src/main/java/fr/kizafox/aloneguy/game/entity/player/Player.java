@@ -3,6 +3,7 @@ package fr.kizafox.aloneguy.game.entity.player;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
+import fr.kizafox.aloneguy.game.entity.item.Item;
 import fr.kizafox.aloneguy.game.utils.ImageRenderer;
 
 import java.awt.*;
@@ -35,34 +36,71 @@ public class Player extends Entity {
 
         this.screenX = ((GAME_WIDTH / 2) - (TILES_SIZE / 2));
         this.screenY = ((GAME_HEIGHT / 2) - (TILES_SIZE / 2));
+
+        this.initHitBox(8, 16, 32, 32);
     }
 
     @Override
     public void update() {
         if (this.getHealth() <= 0) GameState.setStatus(GameState.LOSE);
 
-        float speedX = 0, speedY = 0;
+        collision = false;
+        this.game.getCollisionChecker().checkTile(this);
 
-        if(this.isUp()) speedY -= this.getSpeed();
-        if(this.isDown()) speedY += this.getSpeed();
-        if(this.isLeft()) speedX -= this.getSpeed();
-        if(this.isRight()) speedX += this.getSpeed();
+        if(!collision){
+            float speedX = 0, speedY = 0;
 
-        if (speedX != 0 && speedY != 0) {
-            final float length = (float) Math.sqrt(speedX * speedX + speedY * speedY);
-            speedX = (speedX / length) * this.getSpeed();
-            speedY = (speedY / length) * this.getSpeed();
+            if(this.isUp()) speedY -= this.getSpeed();
+            if(this.isDown()) speedY += this.getSpeed();
+            if(this.isLeft()) speedX -= this.getSpeed();
+            if(this.isRight()) speedX += this.getSpeed();
+
+            if (speedX != 0 && speedY != 0) {
+                final float length = (float) Math.sqrt(speedX * speedX + speedY * speedY);
+                speedX = (speedX / length) * this.getSpeed();
+                speedY = (speedY / length) * this.getSpeed();
+            }
+
+            this.setWorldX(this.getWorldX() + speedX);
+            this.setWorldY(this.getWorldY() + speedY);
         }
 
-        this.setWorldX(this.getWorldX() + speedX);
-        this.setWorldY(this.getWorldY() + speedY);
+        if(this.isMoving()){
+            int animationSpeed = 30;
+
+            if(spriteCounter % animationSpeed == 0){
+                spriteNumber = (spriteNumber % 2) + 1;
+            }
+
+            spriteCounter++;
+        }else{
+            spriteNumber = 1;
+        }
     }
 
     @Override
     public void render(final Graphics graphics) {
         this.renderStats(graphics);
 
-        graphics.drawImage(playerDown1, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
+        BufferedImage playerImage = null;
+
+        if(this.isMoving()){
+            if(this.isUp()) {
+                playerImage = (spriteNumber == 1) ? playerUp1 : playerUp2;
+            }else if(this.isDown()) {
+                playerImage = (spriteNumber == 1) ? playerDown1 : playerDown2;
+            }else if(this.isLeft()) {
+                playerImage = (spriteNumber == 1) ? playerLeft1 : playerLeft2;
+            }else if(this.isRight()) {
+                playerImage = (spriteNumber == 1) ? playerRight1 : playerRight2;
+            }
+            graphics.drawImage(playerImage, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
+        }else{
+            playerImage = playerDown1;
+            graphics.drawImage(playerImage, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
+        }
+
+        this.renderHitBox(graphics, screenX, screenY);
     }
 
     private void renderStats(final Graphics graphics){

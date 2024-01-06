@@ -1,18 +1,18 @@
 package fr.kizafox.aloneguy.game.entity.item.potion;
 
+import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
-
-import java.awt.*;
+import fr.kizafox.aloneguy.game.utils.ImageRenderer;
 
 public class HealPotion extends Potion {
 
-    public HealPotion(Entity entity, float x, float y) {
-        super(entity, x, y, Color.RED);
+    public HealPotion(Game game, Entity entity) {
+        super(game, entity, ImageRenderer.load(ImageRenderer.HEAL_POTION));
     }
 
     @Override
     public void applyEffect() {
         this.getEntity().setHealth(this.getEntity().getMaxHealth());
-        System.out.println("+5");
+        System.out.println("PLAYER IS NOW FULL HEALTH");
     }
 }

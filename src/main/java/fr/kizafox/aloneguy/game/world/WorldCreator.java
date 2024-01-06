@@ -24,8 +24,8 @@ public class WorldCreator {
     public void update(final Entity entity) {
         if(entity instanceof final Player player) {
             for(final Enemy enemy : this.game.getPlayMenu().getEnemyManager().getEnemies().keySet()) {
-                Rectangle2D.Float hitBox1 = player.getHitBox();
-                Rectangle2D.Float hitBox2 = enemy.getHitBox();
+                Rectangle hitBox1 = player.getHitBox();
+                Rectangle hitBox2 = enemy.getHitBox();
 
                 if(hitBox1 != null && hitBox2 != null && hitBox1.intersects(hitBox2)) {
                     float directionX = player.getWorldX() - enemy.getWorldX();
@@ -53,22 +53,6 @@ public class WorldCreator {
 
                     enemy.setWorldX(enemy.getWorldX() - directionX * BOUNCE_FORCE);
                     enemy.setWorldY(enemy.getWorldY() - directionY * BOUNCE_FORCE);
-                }
-            }
-        }
-    }
-
-    public void update() {
-        for (final Item item : this.game.getPlayMenu().getItemManager().getItems().keySet()) {
-            final Player player = this.game.getPlayMenu().getPlayer();
-
-            if (player != null && item.isAvailable()) {
-                Rectangle2D.Float playerHitBox = player.getHitBox();
-                Rectangle2D.Float itemHitBox = item.getHitBox();
-
-                if (playerHitBox != null && itemHitBox != null && playerHitBox.intersects(itemHitBox)) {
-                    item.applyEffect();
-                    item.setAvailable(false);
                 }
             }
         }

@@ -23,20 +23,22 @@ public class ItemManager {
         this.game = game;
         this.player = player;
 
-        this.healPotion = new HealPotion(this.player, 980, 160);
+        this.healPotion = new HealPotion(this.game, this.player);
 
         this.items = new HashMap<>();
         this.items.put(this.healPotion, 0);
     }
 
-    public void update(){
+    public void update() {
         final List<Item> itemsToRemove = new ArrayList<>();
 
-        for(final Map.Entry<Item, Integer> entry : this.items.entrySet()){
+        for (final Map.Entry<Item, Integer> entry : this.items.entrySet()) {
             final Item item = entry.getKey();
-
             item.update();
-            if(!item.isAvailable()) itemsToRemove.add(item);
+
+            if (!item.isAvailable()) {
+                itemsToRemove.add(item);
+            }
         }
 
         itemsToRemove.forEach(this.items::remove);

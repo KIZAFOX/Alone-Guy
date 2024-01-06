@@ -18,8 +18,8 @@ public class TileManager {
 
     protected final Game game;
 
-    private final Tile[] tile;
-    private final int[][] mapTileNumber;
+    public final Tile[] tile;
+    public final int[][] mapTileNumber;
 
     public TileManager(final Game game) {
         this.game = game;
@@ -32,15 +32,18 @@ public class TileManager {
 
         this.tile[1] = new Tile();
         this.tile[1].image = this.getImagePath("wall.png");
+        this.tile[1].collision = true;
 
         this.tile[2] = new Tile();
         this.tile[2].image = this.getImagePath("water.png");
+        this.tile[2].collision = true;
 
         this.tile[3] = new Tile();
         this.tile[3].image = this.getImagePath("earth.png");
 
         this.tile[4] = new Tile();
         this.tile[4].image = this.getImagePath("tree.png");
+        this.tile[4].collision = true;
 
         this.tile[5] = new Tile();
         this.tile[5].image = this.getImagePath("sand.png");

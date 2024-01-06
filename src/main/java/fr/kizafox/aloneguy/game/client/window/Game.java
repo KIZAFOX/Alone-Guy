@@ -3,6 +3,7 @@ package fr.kizafox.aloneguy.game.client.window;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.sub.*;
 import fr.kizafox.aloneguy.game.utils.FPSChecker;
+import fr.kizafox.aloneguy.game.world.CollisionChecker;
 
 import java.awt.*;
 
@@ -22,6 +23,7 @@ public class Game {
     private final PauseMenu pauseMenu;
     private final LoseMenu loseMenu;
 
+    private final CollisionChecker collisionChecker;
     private final FPSChecker fpsChecker;
 
     private final Object pauseLock = new Object();
@@ -38,6 +40,7 @@ public class Game {
         this.pauseMenu = new PauseMenu(this);
         this.loseMenu = new LoseMenu(this);
 
+        this.collisionChecker = new CollisionChecker(this);
         this.fpsChecker = new FPSChecker(this);
 
         new Thread(this.fpsChecker).start();
@@ -100,6 +103,10 @@ public class Game {
 
     public GameWindow getGameWindow() {
         return gameWindow;
+    }
+
+    public CollisionChecker getCollisionChecker() {
+        return collisionChecker;
     }
 
     public FPSChecker getFpsChecker() {

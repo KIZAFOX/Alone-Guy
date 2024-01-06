@@ -1,23 +1,23 @@
 package fr.kizafox.aloneguy.game.entity.item;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 public abstract class Item {
 
     protected float x, y;
     protected int width, height;
-    protected Color color;
-    protected Rectangle2D.Float hitBox;
+    protected BufferedImage image;
+    protected Rectangle hitBox;
 
     protected boolean isAvailable;
 
-    public Item(float x, float y, int width, int height, Color color) {
+    public Item(float x, float y, int width, int height, BufferedImage image) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.color = color;
+        this.image = image;
 
         this.isAvailable = true;
     }
@@ -29,7 +29,12 @@ public abstract class Item {
     public abstract void applyEffect();
 
     protected void initHitBox(final float x, final float y, final int width, final int height){
-        this.hitBox = new Rectangle2D.Float(x, y, width, height);
+        this.hitBox = new Rectangle((int) x, (int) y, width, height);
+    }
+
+    protected void renderHitBox(Graphics graphics, int screenX, int screenY){
+        graphics.setColor(Color.MAGENTA);
+        graphics.drawRect(screenX + this.hitBox.x, screenY + this.hitBox.y, this.hitBox.width, this.hitBox.height);
     }
 
     public void setLocation(final float x, final float y){
@@ -49,9 +54,6 @@ public abstract class Item {
 
     public void setX(float x) {
         this.x = x;
-        if (hitBox != null) {
-            hitBox.x = x;
-        }
     }
 
     public float getY() {
@@ -60,9 +62,6 @@ public abstract class Item {
 
     public void setY(float y) {
         this.y = y;
-        if (hitBox != null) {
-            hitBox.y = y;
-        }
     }
 
     public int getWidth() {
@@ -87,19 +86,19 @@ public abstract class Item {
         }
     }
 
-    public Color getColor() {
-        return color;
+    public BufferedImage getImage() {
+        return image;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setImage(BufferedImage image) {
+        this.image = image;
     }
 
-    public Rectangle2D.Float getHitBox() {
+    public Rectangle getHitBox() {
         return hitBox;
     }
 
-    public void setHitBox(Rectangle2D.Float hitBox) {
+    public void setHitBox(Rectangle hitBox) {
         this.hitBox = hitBox;
     }
 

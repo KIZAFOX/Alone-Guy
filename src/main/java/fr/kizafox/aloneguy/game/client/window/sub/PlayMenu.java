@@ -40,30 +40,20 @@ public class PlayMenu extends WindowAbstract{
 
     @Override
     public void update() {
-        this.player.update();
-        /**
-        this.enemyManager.update();
         this.itemManager.update();
-         **/
+        this.enemyManager.update();
+        this.player.update();
     }
 
     @Override
     public void render(Graphics graphics) {
         this.tileManager.render(graphics);
 
-        this.player.render(graphics);
-        /**
-        this.enemyManager.render(graphics);
         this.itemManager.render(graphics);
+        this.enemyManager.render(graphics);
+        this.player.render(graphics);
 
         WindowUtils.drawCenteredString(graphics, "In Game (" + this.getElapsedTimeFormatted() + ")", 30, Color.WHITE, 2, 10);
-        WindowUtils.drawCenteredString(graphics, "Enemies Count: " + this.enemyManager.getAliveEnemies(), 15, Color.WHITE, 6, 10);
-        WindowUtils.drawCenteredString(graphics, "Items Count: " + this.itemManager.getItemsCount(), 15, Color.WHITE, 8, 10);
-
-        WindowUtils.drawCenteredString(graphics, "Mouse X: " + getMouseX() + " & Mouse Y: " + getMouseY(), 15, Color.BLACK, 2 * 32, 10);
-
-        this.drawGrid(graphics);
-         **/
     }
 
     public void init(){
