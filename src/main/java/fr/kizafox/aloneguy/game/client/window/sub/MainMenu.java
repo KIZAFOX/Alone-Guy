@@ -4,10 +4,10 @@ import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.client.window.button.MenuButton;
 import fr.kizafox.aloneguy.game.utils.ImageRenderer;
+import fr.kizafox.aloneguy.game.utils.sound.SoundPlayer;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
@@ -50,6 +50,7 @@ public class MainMenu extends WindowAbstract{
             Arrays.stream(buttons).forEach(button -> {
                 if(this.isIn(event, button)) {
                     button.setMousePressed(true);
+                    SoundPlayer.playSound(SoundPlayer.BUTTON_PRESS_SOUND, SoundPlayer.Volume.HIGH);
                 }
             });
         }
@@ -62,7 +63,10 @@ public class MainMenu extends WindowAbstract{
                     if(button.isMousePressed()){
                         button.applyGameStatus();
 
-                        if(GameState.getCurrentState().equals(GameState.PLAY)) this.game.getPlayMenu().init();
+                        if(GameState.getCurrentState().equals(GameState.PLAY)){
+                            this.game.getPlayMenu().init();
+                            //SoundPlayer.playSound(SoundPlayer.TEST, SoundPlayer.Volume.LOW);
+                        };
                     }
                 }
             });

@@ -16,7 +16,7 @@ public class Enemy extends Entity {
     public static final float BOUNCE_FORCE = 100.0F / 2;
 
     public Enemy(final Game game, final Player player, float x, float y, int width, int height, double maxHealth) {
-        super(x, y, width, height, maxHealth);
+        super(EntityType.ENEMY, x, y, width, height, maxHealth);
         this.initHitBox(x, y, width, height);
 
         this.game = game;
@@ -43,9 +43,8 @@ public class Enemy extends Entity {
 
             if (this.getHealth() <= 0) {
                 if (this.alive) {
-                    //give exp
+                    //give exp && kill enemy
                     this.alive = false;
-                    this.game.getPlayMenu().getEnemyManager().getEnemies().remove(this);
                 }
             }
         }

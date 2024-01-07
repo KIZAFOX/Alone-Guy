@@ -2,9 +2,11 @@ package fr.kizafox.aloneguy.game.client.window;
 
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.sub.*;
+import fr.kizafox.aloneguy.game.utils.Colors;
 import fr.kizafox.aloneguy.game.utils.FPSChecker;
 import fr.kizafox.aloneguy.game.world.CollisionChecker;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -75,6 +77,10 @@ public class Game {
                 }
             }
         }
+    }
+
+    public static void log(final String message){
+        System.out.println(Colors.GREEN + "[Log-AloneGuy] " + message);
     }
 
     public MainMenu getMainMenu() {

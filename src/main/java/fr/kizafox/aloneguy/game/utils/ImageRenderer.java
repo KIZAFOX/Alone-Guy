@@ -1,6 +1,7 @@
 package fr.kizafox.aloneguy.game.utils;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,8 @@ public class ImageRenderer {
 
     public static final String HEAL_POTION = "sprites/potions/heal_potion.png";
 
+    public static final String LANDMINE = "sprites/traps/landmine.png";
+
     public static BufferedImage load(final String fileName){
         final InputStream inputStream = ImageRenderer.class.getResourceAsStream("/" + fileName);
         final BufferedImage image;
@@ -47,4 +50,13 @@ public class ImageRenderer {
         return image;
     }
 
+    public static BufferedImage scaleImage(final BufferedImage original, final int width, final int height){
+        final BufferedImage scaledImage = new BufferedImage(width, height, original.getType());
+        final Graphics2D graphics2D = scaledImage.createGraphics();
+
+        graphics2D.drawImage(original, 0, 0, width, height, null);
+        graphics2D.dispose();
+
+        return scaledImage;
+    }
 }

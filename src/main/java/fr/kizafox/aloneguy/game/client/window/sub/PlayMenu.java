@@ -3,16 +3,15 @@ package fr.kizafox.aloneguy.game.client.window.sub;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.enemy.EnemyManager;
-import fr.kizafox.aloneguy.game.entity.item.ItemManager;
+import fr.kizafox.aloneguy.game.entity.object.ObjectHandler;
+import fr.kizafox.aloneguy.game.entity.object.ObjectManager;
 import fr.kizafox.aloneguy.game.entity.player.Player;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
 import fr.kizafox.aloneguy.game.world.TileManager;
-import fr.kizafox.aloneguy.game.world.WorldCreator;
 
+import javax.swing.*;
 import java.awt.*;
 import java.time.Duration;
-
-import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
 public class PlayMenu extends WindowAbstract{
 
@@ -21,27 +20,21 @@ public class PlayMenu extends WindowAbstract{
     protected final TileManager tileManager;
 
     protected final Player player;
-    protected final EnemyManager enemyManager;
-    protected final ItemManager itemManager;
+    protected final ObjectManager objectManager;
 
     protected long startTime;
 
-    public int mouseY, mouseX;
-
-    public PlayMenu(final Game game) {
+    public PlayMenu(final Game game){
         this.game = game;
 
         this.tileManager = new TileManager(this.game);
 
         this.player = new Player(this.game);
-        this.enemyManager = new EnemyManager(this.game, this.player);
-        this.itemManager = new ItemManager(this.game, this.player );
+        this.objectManager = new ObjectManager(this.game);
     }
 
     @Override
     public void update() {
-        this.itemManager.update();
-        this.enemyManager.update();
         this.player.update();
     }
 
@@ -49,9 +42,8 @@ public class PlayMenu extends WindowAbstract{
     public void render(Graphics graphics) {
         this.tileManager.render(graphics);
 
-        this.itemManager.render(graphics);
-        this.enemyManager.render(graphics);
         this.player.render(graphics);
+        this.objectManager.render(graphics);
 
         WindowUtils.drawCenteredString(graphics, "In Game (" + this.getElapsedTimeFormatted() + ")", 30, Color.WHITE, 2, 10);
     }
@@ -63,8 +55,6 @@ public class PlayMenu extends WindowAbstract{
     public void reset() {
         GameState.setStatus(GameState.MENU);
         this.player.reset();
-        this.enemyManager.reset();
-        this.itemManager.reset();
     }
 
     private String getElapsedTimeFormatted() {
@@ -80,36 +70,15 @@ public class PlayMenu extends WindowAbstract{
         return tileManager;
     }
 
+    public ObjectManager getObjectManager() {
+        return objectManager;
+    }
+
     public Player getPlayer() {
         return player;
     }
 
-    public EnemyManager getEnemyManager() {
-        return enemyManager;
-    }
-
-    public ItemManager getItemManager() {
-        return itemManager;
-    }
-
-
     public long getStartTime() {
         return startTime;
-    }
-
-    public int getMouseY() {
-        return mouseY;
-    }
-
-    public void setMouseY(int mouseY) {
-        this.mouseY = mouseY;
-    }
-
-    public int getMouseX() {
-        return mouseX;
-    }
-
-    public void setMouseX(int mouseX) {
-        this.mouseX = mouseX;
     }
 }

@@ -1,26 +1,37 @@
 package fr.kizafox.aloneguy.game.entity;
 
+import fr.kizafox.aloneguy.game.client.window.Game;
+import fr.kizafox.aloneguy.game.utils.Colors;
 import fr.kizafox.aloneguy.game.utils.GameSettings;
 
 import java.awt.*;
 
 public abstract class Entity {
 
+    protected final EntityType entityType;
     protected float worldX, worldY, speed = 1.5F * GameSettings.SCALE;
     protected int width, height;
     protected double maxHealth, health;
     protected Rectangle hitBox;
+    protected int solidAreaDefaultX, solidAreaDefaultY;
 
     public boolean up, down, left, right, collision = false;
     public int spriteCounter = 0, spriteNumber = 1;
 
-    public Entity(float worldX, float worldY, int width, int height, double maxHealth) {
+    public Entity(EntityType entityType, float worldX, float worldY, int width, int height, double maxHealth) {
+        this.entityType = entityType;
         this.worldX = worldX;
         this.worldY = worldY;
         this.width = width;
         this.height = height;
         this.maxHealth = maxHealth;
         this.health = this.maxHealth;
+
+        System.out.println();
+        Game.log(Colors.YELLOW + "Entity: " + entityType + " loaded.");
+        Game.log(Colors.YELLOW + "WorldX: " + this.worldX + " - WorldY: " + this.worldY + " - Width: " + this.width + " - Height: " + this.height + " - MaxHealth: " + this.maxHealth);
+        System.out.println();
+
     }
 
     public abstract void update();
@@ -29,6 +40,8 @@ public abstract class Entity {
 
     protected void initHitBox(final float x, final float y, final int width, final int height){
         this.hitBox = new Rectangle((int) x, (int) y, width, height);
+        this.solidAreaDefaultX = this.hitBox.x;
+        this.solidAreaDefaultY = this.hitBox.y;
     }
 
     protected void renderHitBox(Graphics graphics, int screenX, int screenY){
@@ -49,6 +62,10 @@ public abstract class Entity {
         this.setWorldX(this.worldX);
         this.setWorldY(this.worldY);
         this.setHealth(this.maxHealth);
+    }
+
+    public EntityType getEntityType() {
+        return entityType;
     }
 
     public float getWorldX() {
@@ -81,9 +98,6 @@ public abstract class Entity {
 
     public void setWidth(int width) {
         this.width = width;
-        if (hitBox != null) {
-            hitBox.width = width;
-        }
     }
 
     public int getHeight() {
@@ -92,9 +106,6 @@ public abstract class Entity {
 
     public void setHeight(int height) {
         this.height = height;
-        if (hitBox != null) {
-            hitBox.height = height;
-        }
     }
 
     public double getMaxHealth() {
@@ -113,16 +124,28 @@ public abstract class Entity {
         this.health = health;
     }
 
-    public void applyDamage(double damage){
-        this.setHealth(this.getHealth() - damage);
-    }
-
     public Rectangle getHitBox() {
         return hitBox;
     }
 
     public void setHitBox(Rectangle hitBox) {
         this.hitBox = hitBox;
+    }
+
+    public int getSolidAreaDefaultX() {
+        return solidAreaDefaultX;
+    }
+
+    public void setSolidAreaDefaultX(int solidAreaDefaultX) {
+        this.solidAreaDefaultX = solidAreaDefaultX;
+    }
+
+    public int getSolidAreaDefaultY() {
+        return solidAreaDefaultY;
+    }
+
+    public void setSolidAreaDefaultY(int solidAreaDefaultY) {
+        this.solidAreaDefaultY = solidAreaDefaultY;
     }
 
     public boolean isUp() {
@@ -155,5 +178,34 @@ public abstract class Entity {
 
     public void setRight(boolean right) {
         this.right = right;
+    }
+
+    public boolean isCollision() {
+        return collision;
+    }
+
+    public void setCollision(boolean collision) {
+        this.collision = collision;
+    }
+
+    public int getSpriteCounter() {
+        return spriteCounter;
+    }
+
+    public void setSpriteCounter(int spriteCounter) {
+        this.spriteCounter = spriteCounter;
+    }
+
+    public int getSpriteNumber() {
+        return spriteNumber;
+    }
+
+    public void setSpriteNumber(int spriteNumber) {
+        this.spriteNumber = spriteNumber;
+    }
+
+    public enum EntityType {
+        PLAYER,
+        ENEMY;
     }
 }

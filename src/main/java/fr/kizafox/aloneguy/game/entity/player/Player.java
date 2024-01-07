@@ -3,7 +3,6 @@ package fr.kizafox.aloneguy.game.entity.player;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
-import fr.kizafox.aloneguy.game.entity.item.Item;
 import fr.kizafox.aloneguy.game.utils.ImageRenderer;
 
 import java.awt.*;
@@ -31,13 +30,15 @@ public class Player extends Entity {
     public final int screenX, screenY;
 
     public Player(final Game game) {
-        super(TILES_SIZE * 23, TILES_SIZE * 21, (int) (64 * SCALE), (int) (40 * SCALE), 30.0D);
+        super(EntityType.PLAYER, 23 * TILES_SIZE, 21 * TILES_SIZE, (int) (64 * SCALE), (int) (40 * SCALE), 30.0D);
         this.game = game;
 
         this.screenX = ((GAME_WIDTH / 2) - (TILES_SIZE / 2));
         this.screenY = ((GAME_HEIGHT / 2) - (TILES_SIZE / 2));
 
         this.initHitBox(8, 16, 32, 32);
+
+        this.setHealth(this.getMaxHealth() / 2);
     }
 
     @Override
@@ -46,6 +47,8 @@ public class Player extends Entity {
 
         collision = false;
         this.game.getCollisionChecker().checkTile(this);
+
+        this.game.getPlayMenu().getObjectManager().pickUp(this.game.getCollisionChecker().checkObject(this, true), this);
 
         if(!collision){
             float speedX = 0, speedY = 0;

@@ -2,14 +2,12 @@ package fr.kizafox.aloneguy.game.world;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.player.Player;
+import fr.kizafox.aloneguy.game.utils.ImageRenderer;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
@@ -18,50 +16,77 @@ public class TileManager {
 
     protected final Game game;
 
+    private final List<String> filesName;
+    private final List<String> collision;
+
     public final Tile[] tile;
-    public final int[][] mapTileNumber;
+    public final int[][] mapTileNumbers;
+
+    public final int MAX_WORLD_COLUMN, MAX_WORLD_ROW;
 
     public TileManager(final Game game) {
         this.game = game;
 
-        this.tile = new Tile[10];
-        this.mapTileNumber = new int[MAX_WORLD_COLUMN][MAX_WORLD_ROW];
+        this.filesName = new ArrayList<>();
+        this.collision = new ArrayList<>();
 
-        this.tile[0] = new Tile();
-        this.tile[0].image = this.getImagePath("grass.png");
+        InputStream inputStream = this.getClass().getResourceAsStream("/map/tiles/data/tiledata.txt");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
 
-        this.tile[1] = new Tile();
-        this.tile[1].image = this.getImagePath("wall.png");
-        this.tile[1].collision = true;
-
-        this.tile[2] = new Tile();
-        this.tile[2].image = this.getImagePath("water.png");
-        this.tile[2].collision = true;
-
-        this.tile[3] = new Tile();
-        this.tile[3].image = this.getImagePath("earth.png");
-
-        this.tile[4] = new Tile();
-        this.tile[4].image = this.getImagePath("tree.png");
-        this.tile[4].collision = true;
-
-        this.tile[5] = new Tile();
-        this.tile[5].image = this.getImagePath("sand.png");
+        String line;
 
         try {
-            final InputStream inputStream = this.getClass().getResourceAsStream("/map/default_map.txt");
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
+            while ((line = bufferedReader.readLine()) != null){
+                this.filesName.add(line);
+                this.collision.add(bufferedReader.readLine());
+            }
+        }catch (final IOException e){
+            throw new RuntimeException(e);
+        }
+
+        this.tile = new Tile[this.filesName.size()];
+
+        for(int i = 0; i < this.filesName.size(); i++){
+            final String fileName = this.filesName.get(i);
+            final String collision = this.collision.get(i);
+
+            this.tile[i] = new Tile();
+            this.tile[i].image = ImageRenderer.load("map/tiles/" + fileName);
+            this.tile[i].image = ImageRenderer.scaleImage(this.tile[i].image, TILES_SIZE, TILES_SIZE);
+            this.tile[i].collision = Boolean.parseBoolean(collision);
+        }
+
+        inputStream = this.getClass().getResourceAsStream("/map/default_map.txt");
+        bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
+
+        try {
+            final String line2 = bufferedReader.readLine();
+            final String[] maxTile = line2.split(" ");
+
+            MAX_WORLD_COLUMN = maxTile.length;
+            MAX_WORLD_ROW = maxTile.length;
+
+            this.mapTileNumbers = new int[MAX_WORLD_COLUMN][MAX_WORLD_ROW];
+
+            bufferedReader.close();
+        }catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            inputStream = this.getClass().getResourceAsStream("/map/default_map.txt");
+            bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
 
             int column = 0, row = 0;
 
             while (column < MAX_WORLD_COLUMN && row < MAX_WORLD_ROW){
-                String line = bufferedReader.readLine();
+                String line3 = bufferedReader.readLine();
 
                 while(column < MAX_WORLD_COLUMN){
-                    String[] numbers = line.split(" ");
+                    String[] numbers = line3.split(" ");
                     int number = Integer.parseInt(numbers[column]);
 
-                    mapTileNumber[column][row] = number;
+                    mapTileNumbers[column][row] = number;
                     column++;
                 }
 
@@ -81,22 +106,18 @@ public class TileManager {
         int worldColumn = 0, worldRow = 0;
 
         while (worldColumn < MAX_WORLD_COLUMN && worldRow < MAX_WORLD_ROW){
-            int tileNumber = this.mapTileNumber[worldColumn][worldRow];
+            int tileNumber = this.mapTileNumbers[worldColumn][worldRow];
 
-            int
-                    worldX = worldColumn * TILES_SIZE,
-                    worldY = worldRow * TILES_SIZE;
+            int worldX = worldColumn * TILES_SIZE, worldY = worldRow * TILES_SIZE;
 
             final Player player = this.game.getPlayMenu().getPlayer();
 
-            int
-                    screenX = (int) (worldX - player.getWorldX() + player.screenX),
-                    screenY = (int) (worldY - player.getWorldY() + player.screenY);
+            int screenX = (int) (worldX - player.getWorldX() + player.screenX), screenY = (int) (worldY - player.getWorldY() + player.screenY);
 
             if(worldX + TILES_SIZE > player.getWorldX() - player.screenX &&
-               worldX - TILES_SIZE < player.getWorldX() + player.screenX &&
-               worldY + TILES_SIZE > player.getWorldY() - player.screenY &&
-               worldY - TILES_SIZE < player.getWorldY() + player.screenY){
+                    worldX - TILES_SIZE < player.getWorldX() + player.screenX &&
+                    worldY + TILES_SIZE > player.getWorldY() - player.screenY &&
+                    worldY - TILES_SIZE < player.getWorldY() + player.screenY){
                 graphics.drawImage(this.tile[tileNumber].image, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
             }
 
@@ -106,15 +127,6 @@ public class TileManager {
                 worldColumn = 0;
                 worldRow++;
             }
-        }
-    }
-
-
-    private BufferedImage getImagePath(String fileName){
-        try {
-            return ImageIO.read(Objects.requireNonNull(this.getClass().getResourceAsStream("/tiles/" + fileName)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

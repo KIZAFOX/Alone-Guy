@@ -1,5 +1,7 @@
 package fr.kizafox.aloneguy.game.client.window;
 
+import fr.kizafox.aloneguy.game.utils.Colors;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
@@ -28,6 +30,7 @@ public class GameWindow extends JFrame {
      * @see JComponent#getDefaultLocale
      */
     public GameWindow(final GamePanel gamePanel) throws HeadlessException {
+        Game.log("Game window loading...");
         this.setTitle(NAME + " - " + VERSION);
         this.add(gamePanel);
         this.pack();
@@ -48,6 +51,10 @@ public class GameWindow extends JFrame {
             }
         });
 
-        System.out.println(GAME_WIDTH + "x" + GAME_HEIGHT);
+        Game.log("Window default size: " + GAME_WIDTH + "x" + GAME_HEIGHT);
+        Game.log("Resizable: " + this.isResizable());
+        Game.log("Window visible: " + this.isVisible());
+        Game.log("Game window created...");
+        System.out.println();
     }
 }
