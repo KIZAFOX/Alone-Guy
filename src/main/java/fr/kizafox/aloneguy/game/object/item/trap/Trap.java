@@ -1,7 +1,7 @@
-package fr.kizafox.aloneguy.game.entity.object.item.trap;
+package fr.kizafox.aloneguy.game.object.item.trap;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
-import fr.kizafox.aloneguy.game.entity.object.ObjectHandler;
+import fr.kizafox.aloneguy.game.object.ObjectHandler;
 
 import java.awt.image.BufferedImage;
 

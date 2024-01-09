@@ -1,7 +1,7 @@
-package fr.kizafox.aloneguy.game.entity.object.item.potion;
+package fr.kizafox.aloneguy.game.object.item.potion;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
-import fr.kizafox.aloneguy.game.entity.object.ObjectHandler;
+import fr.kizafox.aloneguy.game.object.ObjectHandler;
 
 import java.awt.image.BufferedImage;
 

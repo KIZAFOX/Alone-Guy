@@ -2,6 +2,8 @@ package fr.kizafox.aloneguy.game.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +13,8 @@ public class ImageRenderer {
     public static final String BACKGROUND = "background.jpg";
 
     public static final String BUTTON_ATLAS = "button_atlas.png";
+
+    public static final String PLAYER_SHEET = "sprites/player/test/player_sheet.png";
 
     public static final String PLAYER_UP_1 = "sprites/player/boy_up_1.png";
     public static final String PLAYER_UP_2 = "sprites/player/boy_up_2.png";
@@ -23,6 +27,8 @@ public class ImageRenderer {
 
     public static final String PLAYER_RIGHT_1 = "sprites/player/boy_right_1.png";
     public static final String PLAYER_RIGHT_2 = "sprites/player/boy_right_2.png";
+
+    public static final String ZOMBIE = "sprites/enemies/zombie.png";
 
     public static final String HEAL_POTION = "sprites/potions/heal_potion.png";
 
@@ -47,6 +53,14 @@ public class ImageRenderer {
                 throw new RuntimeException(e);
             }
         }
+        return image;
+    }
+
+    public static BufferedImage flipImage(BufferedImage image){
+        final AffineTransform affineTransform = AffineTransform.getScaleInstance(-1, 1);
+        affineTransform.translate(-image.getWidth(null), 0);
+        AffineTransformOp affineTransformOp = new AffineTransformOp(affineTransform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        image = affineTransformOp.filter(image, null);
         return image;
     }
 

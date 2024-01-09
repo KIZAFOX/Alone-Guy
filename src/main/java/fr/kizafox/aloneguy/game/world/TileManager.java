@@ -22,7 +22,7 @@ public class TileManager {
     public final Tile[] tile;
     public final int[][] mapTileNumbers;
 
-    public final int MAX_WORLD_COLUMN, MAX_WORLD_ROW;
+    public int MAX_WORLD_COLUMN, MAX_WORLD_ROW;
 
     public TileManager(final Game game) {
         this.game = game;

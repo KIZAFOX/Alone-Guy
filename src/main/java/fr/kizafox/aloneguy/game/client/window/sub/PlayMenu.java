@@ -3,13 +3,12 @@ package fr.kizafox.aloneguy.game.client.window.sub;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.enemy.EnemyManager;
-import fr.kizafox.aloneguy.game.entity.object.ObjectHandler;
-import fr.kizafox.aloneguy.game.entity.object.ObjectManager;
+import fr.kizafox.aloneguy.game.object.ObjectManager;
 import fr.kizafox.aloneguy.game.entity.player.Player;
+import fr.kizafox.aloneguy.game.utils.GameSettings;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
 import fr.kizafox.aloneguy.game.world.TileManager;
 
-import javax.swing.*;
 import java.awt.*;
 import java.time.Duration;
 
@@ -20,6 +19,8 @@ public class PlayMenu extends WindowAbstract{
     protected final TileManager tileManager;
 
     protected final Player player;
+    protected final EnemyManager enemyManager;
+
     protected final ObjectManager objectManager;
 
     protected long startTime;
@@ -30,22 +31,31 @@ public class PlayMenu extends WindowAbstract{
         this.tileManager = new TileManager(this.game);
 
         this.player = new Player(this.game);
+        this.enemyManager = new EnemyManager(this.game);
+
         this.objectManager = new ObjectManager(this.game);
     }
 
     @Override
     public void update() {
         this.player.update();
+        this.enemyManager.update();
     }
 
     @Override
     public void render(Graphics graphics) {
+        graphics.setColor(Color.BLACK);
+        graphics.fillRect(0, 0, GameSettings.GAME_WIDTH, GameSettings.GAME_HEIGHT);
+
         this.tileManager.render(graphics);
 
         this.player.render(graphics);
+        this.enemyManager.render(graphics);
+
         this.objectManager.render(graphics);
 
         WindowUtils.drawCenteredString(graphics, "In Game (" + this.getElapsedTimeFormatted() + ")", 30, Color.WHITE, 2, 10);
+        WindowUtils.drawCenteredString(graphics, "Level: " + this.getPlayer().getLevel(), 20, Color.BLACK, 5, 10);
     }
 
     public void init(){
@@ -70,12 +80,16 @@ public class PlayMenu extends WindowAbstract{
         return tileManager;
     }
 
-    public ObjectManager getObjectManager() {
-        return objectManager;
-    }
-
     public Player getPlayer() {
         return player;
+    }
+
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
+    }
+
+    public ObjectManager getObjectManager() {
+        return objectManager;
     }
 
     public long getStartTime() {

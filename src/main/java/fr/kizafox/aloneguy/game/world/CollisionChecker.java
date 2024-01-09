@@ -2,7 +2,8 @@ package fr.kizafox.aloneguy.game.world;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
-import fr.kizafox.aloneguy.game.entity.object.ObjectHandler;
+import fr.kizafox.aloneguy.game.entity.enemy.EnemyHandler;
+import fr.kizafox.aloneguy.game.object.ObjectHandler;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
@@ -34,14 +35,13 @@ public class CollisionChecker {
             tileNumber1 = tileManager.mapTileNumbers[entityLeftColumn][entityTopRow];
             tileNumber2 = tileManager.mapTileNumbers[entityRightColumn][entityTopRow];
 
-            if (tileManager.tile[tileNumber1].collision || tileManager.tile[tileNumber2].collision) entity.collision = true;
-        }
-        else if(entity.isDown()){
+            entity.collision = tileManager.tile[tileNumber1].collision || tileManager.tile[tileNumber2].collision;
+        } else if(entity.isDown()){
             entityBottomRow = (int) ((entityBottomWorldY + entity.getSpeed()) / TILES_SIZE);
             tileNumber1 = tileManager.mapTileNumbers[entityLeftColumn][entityBottomRow];
             tileNumber2 = tileManager.mapTileNumbers[entityRightColumn][entityBottomRow];
 
-            if (tileManager.tile[tileNumber1].collision || tileManager.tile[tileNumber2].collision) entity.collision = true;
+            entity.collision = tileManager.tile[tileNumber1].collision || tileManager.tile[tileNumber2].collision;
         }else if(entity.isLeft()){
             entityLeftColumn = (int) ((entityLeftWorldX - entity.getSpeed()) / TILES_SIZE);
             tileNumber1 = tileManager.mapTileNumbers[entityLeftColumn][entityTopRow];
@@ -130,4 +130,89 @@ public class CollisionChecker {
 
         return index;
     }
+
+    public int checkEnemy(final Entity entity, final boolean player){
+        int index = 999;
+
+        final EnemyHandler[] objectHandler = this.game.getPlayMenu().getEnemyManager().getEnemies();
+
+        for(int i = 0; i < objectHandler.length; i++){
+            if(objectHandler[i] != null){
+                entity.getHitBox().x = (int) (entity.getWorldX() + entity.getHitBox().x);
+                entity.getHitBox().y = (int) (entity.getWorldY() + entity.getHitBox().y);
+
+                objectHandler[i].getHitBox().x = (int) (objectHandler[i].getWorldX() + objectHandler[i].getHitBox().x);
+                objectHandler[i].getHitBox().y = (int) (objectHandler[i].getWorldY() + objectHandler[i].getHitBox().y);
+
+                if(entity.isUp()){
+                    entity.getHitBox().y -= (int) entity.getSpeed();
+
+                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
+                        if(objectHandler[i].isCollision()){
+                            entity.collision = true;
+                        }
+
+                        if(player){
+                            index = i;
+                        }
+                    }
+                }else if(entity.isDown()){
+                    entity.getHitBox().y += (int) entity.getSpeed();
+
+                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
+                        if(objectHandler[i].isCollision()){
+                            entity.collision = true;
+                        }
+
+                        if(player){
+                            index = i;
+                        }
+                    }
+                }else if(entity.isLeft()){
+                    entity.getHitBox().x -= (int) entity.getSpeed();
+
+                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
+                        if(objectHandler[i].isCollision()){
+                            entity.collision = true;
+                        }
+
+                        if(player){
+                            index = i;
+                        }
+                    }
+                }else if(entity.isRight()){
+                    entity.getHitBox().x += (int) entity.getSpeed();
+
+                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
+                        if(objectHandler[i].isCollision()){
+                            entity.collision = true;
+                        }
+
+                        if(player){
+                            index = i;
+                        }
+                    }
+                }
+
+                entity.getHitBox().x = entity.getSolidAreaDefaultX();
+                entity.getHitBox().y = entity.getSolidAreaDefaultY();
+
+                objectHandler[i].getHitBox().x = objectHandler[i].getSolidAreaDefaultX();
+                objectHandler[i].getHitBox().y = objectHandler[i].getSolidAreaDefaultY();
+            }
+        }
+
+        return index;
+    }
+
+    // Ajoutez cette méthode à votre classe CollisionChecker
+    public boolean checkTileCollision(float x, float y) {
+        int entityLeftColumn = (int) (x / TILES_SIZE);
+        int entityTopRow = (int) (y / TILES_SIZE);
+
+        int tileNumber = this.game.getPlayMenu().getTileManager().mapTileNumbers[entityLeftColumn][entityTopRow];
+
+        return !this.game.getPlayMenu().getTileManager().tile[tileNumber].collision;
+    }
+
 }

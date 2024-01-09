@@ -5,20 +5,27 @@ import fr.kizafox.aloneguy.game.utils.Colors;
 import fr.kizafox.aloneguy.game.utils.GameSettings;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public abstract class Entity {
 
     protected final EntityType entityType;
-    protected float worldX, worldY, speed = 1.5F * GameSettings.SCALE;
+    protected float worldX, worldY, speed = 1.20F * GameSettings.SCALE;
     protected int width, height;
     protected double maxHealth, health;
+    protected int damage;
+    protected int currentExp = 50, level = 1, expToNextLevel = 100;
     protected Rectangle hitBox;
     protected int solidAreaDefaultX, solidAreaDefaultY;
 
     public boolean up, down, left, right, collision = false;
-    public int spriteCounter = 0, spriteNumber = 1;
 
-    public Entity(EntityType entityType, float worldX, float worldY, int width, int height, double maxHealth) {
+    public BufferedImage[][] animations;
+
+    public int animationTick, animationIndex, animationSpeed = 15;
+    public int playerState = PlayerState.IDLE;
+
+    public Entity(EntityType entityType, float worldX, float worldY, int width, int height, double maxHealth, int damage) {
         this.entityType = entityType;
         this.worldX = worldX;
         this.worldY = worldY;
@@ -26,12 +33,12 @@ public abstract class Entity {
         this.height = height;
         this.maxHealth = maxHealth;
         this.health = this.maxHealth;
+        this.damage = damage;
 
         System.out.println();
         Game.log(Colors.YELLOW + "Entity: " + entityType + " loaded.");
         Game.log(Colors.YELLOW + "WorldX: " + this.worldX + " - WorldY: " + this.worldY + " - Width: " + this.width + " - Height: " + this.height + " - MaxHealth: " + this.maxHealth);
         System.out.println();
-
     }
 
     public abstract void update();
@@ -51,6 +58,10 @@ public abstract class Entity {
 
     protected boolean isMoving(){
         return this.isUp() || this.isDown() || this.isLeft() || this.isRight();
+    }
+
+    public void attack(final Entity entity, final double damage){
+        entity.setHealth(entity.getHealth() - damage);
     }
 
     public void teleport(final float x, final float y){
@@ -124,6 +135,55 @@ public abstract class Entity {
         this.health = health;
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getCurrentExp() {
+        return currentExp;
+    }
+
+    public void setCurrentExp(int currentExp) {
+        this.currentExp = currentExp;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getExpToNextLevel() {
+        return expToNextLevel;
+    }
+
+    public void setExpToNextLevel(int expToNextLevel) {
+        this.expToNextLevel = expToNextLevel;
+    }
+
+    public String getExpPercentage(){
+        return String.format("%.2f%%", (double) this.currentExp / this.expToNextLevel * 100);
+    }
+
+    public void checkLevelUp() {
+        if(this.currentExp >= this.expToNextLevel){
+            level++;
+            Game.log("Congratulations! You leveled up to level " + level + ".");
+            expToNextLevel = level * 100;
+        }
+    }
+
+    public void gainExperience(int experience){
+        this.currentExp += experience;
+        this.checkLevelUp();
+    }
+
     public Rectangle getHitBox() {
         return hitBox;
     }
@@ -188,24 +248,32 @@ public abstract class Entity {
         this.collision = collision;
     }
 
-    public int getSpriteCounter() {
-        return spriteCounter;
-    }
-
-    public void setSpriteCounter(int spriteCounter) {
-        this.spriteCounter = spriteCounter;
-    }
-
-    public int getSpriteNumber() {
-        return spriteNumber;
-    }
-
-    public void setSpriteNumber(int spriteNumber) {
-        this.spriteNumber = spriteNumber;
-    }
-
     public enum EntityType {
         PLAYER,
         ENEMY;
+    }
+
+    public static class PlayerState {
+        public static final int IDLE = 0;
+        public static final int RUNNING = 1;
+        public static final int ATTACKING = 7;
+        public static final int DYING = 9;
+
+        public static int getSpriteAmount(final int playerState){
+            switch (playerState){
+                case IDLE, ATTACKING -> {
+                    return 4;
+                }
+                case RUNNING -> {
+                    return 6;
+                }
+                case DYING -> {
+                    return 5;
+                }
+                default -> {
+                    return 1;
+                }
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package fr.kizafox.aloneguy.game.entity.object;
+package fr.kizafox.aloneguy.game.object;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
@@ -48,9 +48,6 @@ public abstract class ObjectHandler {
                 worldY - TILES_SIZE < player.getWorldY() + player.screenY){
             graphics.drawImage(image, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
         }
-
-        graphics.setColor(Color.RED);
-        graphics.drawRect(screenX + this.hitBox.x, screenY + this.hitBox.y, this.hitBox.width, this.hitBox.height);
     }
 
     protected void initHitBox(final float x, final float y, final int width, final int height){

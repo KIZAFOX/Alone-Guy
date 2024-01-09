@@ -15,30 +15,20 @@ public class Player extends Entity {
 
     protected final Game game;
 
-    private final BufferedImage playerUp1 = ImageRenderer.load(ImageRenderer.PLAYER_UP_1);
-    private final BufferedImage playerUp2 = ImageRenderer.load(ImageRenderer.PLAYER_UP_2);
-
-    private final BufferedImage playerDown1 = ImageRenderer.load(ImageRenderer.PLAYER_DOWN_1);
-    private final BufferedImage playerDown2 = ImageRenderer.load(ImageRenderer.PLAYER_DOWN_2);
-
-    private final BufferedImage playerLeft1 = ImageRenderer.load(ImageRenderer.PLAYER_LEFT_1);
-    private final BufferedImage playerLeft2 = ImageRenderer.load(ImageRenderer.PLAYER_LEFT_2);
-
-    private final BufferedImage playerRight1 = ImageRenderer.load(ImageRenderer.PLAYER_RIGHT_1);
-    private final BufferedImage playerRight2 = ImageRenderer.load(ImageRenderer.PLAYER_RIGHT_2);
+    private final BufferedImage PLAYER_IMAGE = ImageRenderer.load(ImageRenderer.PLAYER_SHEET);
 
     public final int screenX, screenY;
 
     public Player(final Game game) {
-        super(EntityType.PLAYER, 23 * TILES_SIZE, 21 * TILES_SIZE, (int) (64 * SCALE), (int) (40 * SCALE), 30.0D);
+        super(EntityType.PLAYER, 14 * TILES_SIZE, 8 * TILES_SIZE, (int) (64 * SCALE), (int) (40 * SCALE), 30.0D, 2);
         this.game = game;
 
         this.screenX = ((GAME_WIDTH / 2) - (TILES_SIZE / 2));
         this.screenY = ((GAME_HEIGHT / 2) - (TILES_SIZE / 2));
 
-        this.initHitBox(8, 16, 32, 32);
+        this.loadAnimations();
 
-        this.setHealth(this.getMaxHealth() / 2);
+        this.initHitBox(47, 32, 50, 32);
     }
 
     @Override
@@ -49,6 +39,7 @@ public class Player extends Entity {
         this.game.getCollisionChecker().checkTile(this);
 
         this.game.getPlayMenu().getObjectManager().pickUp(this.game.getCollisionChecker().checkObject(this, true), this);
+        this.game.getPlayMenu().getEnemyManager().attackPlayer(this.game.getCollisionChecker().checkEnemy(this, true), this);
 
         if(!collision){
             float speedX = 0, speedY = 0;
@@ -68,42 +59,60 @@ public class Player extends Entity {
             this.setWorldY(this.getWorldY() + speedY);
         }
 
-        if(this.isMoving()){
-            int animationSpeed = 30;
-
-            if(spriteCounter % animationSpeed == 0){
-                spriteNumber = (spriteNumber % 2) + 1;
-            }
-
-            spriteCounter++;
-        }else{
-            spriteNumber = 1;
-        }
+        this.checkLevelUp();
     }
 
     @Override
     public void render(final Graphics graphics) {
         this.renderStats(graphics);
 
-        BufferedImage playerImage = null;
+        this.updateAnimationTick();
+        this.setAnimation();
 
-        if(this.isMoving()){
-            if(this.isUp()) {
-                playerImage = (spriteNumber == 1) ? playerUp1 : playerUp2;
-            }else if(this.isDown()) {
-                playerImage = (spriteNumber == 1) ? playerDown1 : playerDown2;
-            }else if(this.isLeft()) {
-                playerImage = (spriteNumber == 1) ? playerLeft1 : playerLeft2;
-            }else if(this.isRight()) {
-                playerImage = (spriteNumber == 1) ? playerRight1 : playerRight2;
-            }
-            graphics.drawImage(playerImage, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
+        if(isLeft()){
+            graphics.drawImage(ImageRenderer.flipImage(this.animations[this.playerState][this.animationIndex]), screenX, screenY, 128, 80, null);
         }else{
-            playerImage = playerDown1;
-            graphics.drawImage(playerImage, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
+            graphics.drawImage(this.animations[this.playerState][this.animationIndex], screenX, screenY, 128, 80, null);
         }
 
         this.renderHitBox(graphics, screenX, screenY);
+    }
+
+    public void resetBooleans(){
+        this.setUp(false);
+        this.setDown(false);
+        this.setLeft(false);
+        this.setRight(false);
+    }
+
+    private void loadAnimations(){
+        this.animations = new BufferedImage[11][7];
+        for(int j = 0; j < this.animations.length; j++){
+            for(int i = 0; i < this.animations[j].length; i++){
+                this.animations[j][i] = PLAYER_IMAGE.getSubimage(i * 50, j * 37, 50, 37);
+            }
+        }
+    }
+
+    private void updateAnimationTick(){
+        this.animationTick++;
+
+        if(this.animationTick >= this.animationSpeed){
+            this.animationTick = 0;
+            this.animationIndex++;
+
+            if(this.animationIndex >= PlayerState.getSpriteAmount(this.playerState)){
+                this.animationIndex = 0;
+            }
+        }
+    }
+
+    private void setAnimation(){
+        if(this.isMoving()){
+            this.playerState = PlayerState.RUNNING;
+        }else{
+            this.playerState = PlayerState.IDLE;
+        }
     }
 
     private void renderStats(final Graphics graphics){
@@ -118,8 +127,12 @@ public class Player extends Entity {
         graphics.setColor(Color.RED);
         graphics.fillRect(15, 15, currentHealthWidth, 10);
 
+        int maxExpWidth = 225;
+        int currentExpWidth = (int) ((double) this.getCurrentExp() / this.getExpToNextLevel() * maxExpWidth);
+        currentExpWidth = Math.min(currentExpWidth, maxExpWidth);
+
         graphics.setColor(Color.YELLOW);
-        graphics.fillRect(15, 35, maxHealthWidth, 10);
+        graphics.fillRect(15, 35, currentExpWidth, 10);
     }
 
     public void keyPressed(KeyEvent e) {

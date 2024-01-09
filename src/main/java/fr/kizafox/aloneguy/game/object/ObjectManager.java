@@ -1,9 +1,9 @@
-package fr.kizafox.aloneguy.game.entity.object;
+package fr.kizafox.aloneguy.game.object;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
-import fr.kizafox.aloneguy.game.entity.object.item.potion.HealPotion;
-import fr.kizafox.aloneguy.game.entity.object.item.trap.Landmine;
+import fr.kizafox.aloneguy.game.object.item.potion.HealPotion;
+import fr.kizafox.aloneguy.game.object.item.trap.Landmine;
 import fr.kizafox.aloneguy.game.utils.Colors;
 
 import java.awt.*;

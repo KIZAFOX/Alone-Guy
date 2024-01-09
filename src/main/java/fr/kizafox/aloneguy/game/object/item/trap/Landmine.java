@@ -1,4 +1,4 @@
-package fr.kizafox.aloneguy.game.entity.object.item.trap;
+package fr.kizafox.aloneguy.game.object.item.trap;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
@@ -7,7 +7,7 @@ import fr.kizafox.aloneguy.game.utils.sound.SoundPlayer;
 
 public class Landmine extends Trap {
     public Landmine(Game game) {
-        super(game, "Landmine", 27, 21, ImageRenderer.load(ImageRenderer.LANDMINE));
+        super(game, "Landmine", 17, 8, ImageRenderer.load(ImageRenderer.LANDMINE));
     }
 
     @Override
