@@ -8,41 +8,23 @@ import fr.kizafox.aloneguy.game.utils.ImageRenderer;
 public class Zombie extends EnemyHandler {
 
     public Zombie(Game game) {
-        super(game, EnemyType.ZOMBIE, 100, 0, 0.5F, 14, 10, ImageRenderer.load(ImageRenderer.ZOMBIE));
+        super(game, EnemyType.ZOMBIE, ImageRenderer.load(ImageRenderer.PLAYER_SHEET), 50, 20, 0, 0.5F, 14, 10);
+
+        this.loadAnimations();
     }
 
     @Override
     public void update() {
-        this.collision = false;
-        this.game.getCollisionChecker().checkTile(this);
-
-        if (!collision) {
-            final Player player = game.getPlayMenu().getPlayer();
-
-            final double deltaX = player.getWorldX() - worldX;
-            final double deltaY = player.getWorldY() - worldY;
-
-            final double angle = Math.atan2(deltaY, deltaX);
-
-            final double moveX = Math.cos(angle) * speed;
-            final double moveY = Math.sin(angle) * speed;
-
-            worldX += (float) moveX;
-            worldY += (float) moveY;
+        if(this.isDead()){
+            this.game.getPlayMenu().getPlayer().gainExperience(this.getExperienceGain());
+            this.game.getPlayMenu().getEnemyManager().removeEnemy(this.game.getPlayMenu().getEnemyManager().getEnemies().indexOf(this));
         }
+
+        this.updatePosition();
     }
 
     @Override
-    public void onEnemyTakeDamage() {
-        final Player player = this.game.getPlayMenu().getPlayer();
-
-        player.attack(this, player.getDamage());
-    }
-
-    @Override
-    public void onPlayerTakeDamage() {
-        final Player player = this.game.getPlayMenu().getPlayer();
-
-        this.attack(player, this.getDamage());
+    public void enemyAttack(Player player) {
+        player.applyDamage(0);
     }
 }

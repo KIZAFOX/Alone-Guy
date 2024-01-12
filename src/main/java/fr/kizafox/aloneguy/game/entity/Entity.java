@@ -5,6 +5,7 @@ import fr.kizafox.aloneguy.game.utils.Colors;
 import fr.kizafox.aloneguy.game.utils.GameSettings;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
@@ -15,10 +16,10 @@ public abstract class Entity {
     protected double maxHealth, health;
     protected int damage;
     protected int currentExp = 50, level = 1, expToNextLevel = 100;
-    protected Rectangle hitBox;
+    protected Rectangle hitBox, attackBox;
     protected int solidAreaDefaultX, solidAreaDefaultY;
 
-    public boolean up, down, left, right, collision = false;
+    public boolean up, down, left, right, wasFacingLeft = false, attacking, collision = false;
 
     public BufferedImage[][] animations;
 
@@ -56,12 +57,29 @@ public abstract class Entity {
         graphics.drawRect(screenX + this.hitBox.x, screenY + this.hitBox.y, this.hitBox.width, this.hitBox.height);
     }
 
+    protected void initAttackBox(final float x, final float y, final int width, final int height){
+        this.attackBox = new Rectangle((int) x, (int) y, width, height);
+    }
+
+    protected void renderAttackBox(Graphics graphics){
+        if(isAttacking()){
+            graphics.setColor(Color.RED);
+            graphics.drawRect(this.attackBox.x, this.attackBox.y, this.attackBox.width, this.attackBox.height);
+        }
+    }
+
     protected boolean isMoving(){
         return this.isUp() || this.isDown() || this.isLeft() || this.isRight();
     }
 
-    public void attack(final Entity entity, final double damage){
-        entity.setHealth(entity.getHealth() - damage);
+    public void applyDamage(final double damage){
+        this.setHealth(this.getHealth() - damage);
+
+        Game.log(this.getEntityType() + " took " + damage + " damage. (Health: " + this.getHealth() + ")");
+    }
+
+    public boolean isDead(){
+        return this.health <= 0;
     }
 
     public void teleport(final float x, final float y){
@@ -240,12 +258,60 @@ public abstract class Entity {
         this.right = right;
     }
 
+    public boolean isAttacking() {
+        return attacking;
+    }
+
+    public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
     public boolean isCollision() {
         return collision;
     }
 
     public void setCollision(boolean collision) {
         this.collision = collision;
+    }
+
+    public BufferedImage[][] getAnimations() {
+        return animations;
+    }
+
+    public void setAnimations(BufferedImage[][] animations) {
+        this.animations = animations;
+    }
+
+    public int getAnimationTick() {
+        return animationTick;
+    }
+
+    public void setAnimationTick(int animationTick) {
+        this.animationTick = animationTick;
+    }
+
+    public int getAnimationIndex() {
+        return animationIndex;
+    }
+
+    public void setAnimationIndex(int animationIndex) {
+        this.animationIndex = animationIndex;
+    }
+
+    public int getAnimationSpeed() {
+        return animationSpeed;
+    }
+
+    public void setAnimationSpeed(int animationSpeed) {
+        this.animationSpeed = animationSpeed;
+    }
+
+    public int getPlayerState() {
+        return playerState;
+    }
+
+    public void setPlayerState(int playerState) {
+        this.playerState = playerState;
     }
 
     public enum EntityType {

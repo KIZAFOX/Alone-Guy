@@ -1,4 +1,4 @@
-package fr.kizafox.aloneguy.game.world;
+package fr.kizafox.aloneguy.game.world.tile;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.player.Player;

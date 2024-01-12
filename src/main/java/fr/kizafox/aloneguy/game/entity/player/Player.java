@@ -3,10 +3,12 @@ package fr.kizafox.aloneguy.game.entity.player;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
+import fr.kizafox.aloneguy.game.entity.enemy.EnemyHandler;
 import fr.kizafox.aloneguy.game.utils.ImageRenderer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
@@ -16,6 +18,8 @@ public class Player extends Entity {
     protected final Game game;
 
     private final BufferedImage PLAYER_IMAGE = ImageRenderer.load(ImageRenderer.PLAYER_SHEET);
+
+    private boolean showMap = false, showMinimap = true, hasMiniMap = true;
 
     public final int screenX, screenY;
 
@@ -28,36 +32,14 @@ public class Player extends Entity {
 
         this.loadAnimations();
 
-        this.initHitBox(47, 32, 50, 32);
+        this.initHitBox(40, 15, 45, 60);
     }
 
     @Override
     public void update() {
-        if (this.getHealth() <= 0) GameState.setStatus(GameState.LOSE);
+        if(this.isDead()) GameState.setStatus(GameState.LOSE);
 
-        collision = false;
-        this.game.getCollisionChecker().checkTile(this);
-
-        this.game.getPlayMenu().getObjectManager().pickUp(this.game.getCollisionChecker().checkObject(this, true), this);
-        this.game.getPlayMenu().getEnemyManager().attackPlayer(this.game.getCollisionChecker().checkEnemy(this, true), this);
-
-        if(!collision){
-            float speedX = 0, speedY = 0;
-
-            if(this.isUp()) speedY -= this.getSpeed();
-            if(this.isDown()) speedY += this.getSpeed();
-            if(this.isLeft()) speedX -= this.getSpeed();
-            if(this.isRight()) speedX += this.getSpeed();
-
-            if (speedX != 0 && speedY != 0) {
-                final float length = (float) Math.sqrt(speedX * speedX + speedY * speedY);
-                speedX = (speedX / length) * this.getSpeed();
-                speedY = (speedY / length) * this.getSpeed();
-            }
-
-            this.setWorldX(this.getWorldX() + speedX);
-            this.setWorldY(this.getWorldY() + speedY);
-        }
+        this.updatePosition();
 
         this.checkLevelUp();
     }
@@ -69,53 +51,103 @@ public class Player extends Entity {
         this.updateAnimationTick();
         this.setAnimation();
 
-        if(isLeft()){
+        if(wasFacingLeft) {
             graphics.drawImage(ImageRenderer.flipImage(this.animations[this.playerState][this.animationIndex]), screenX, screenY, 128, 80, null);
-        }else{
+            this.initAttackBox(screenX - 15, screenY + 15, 45, 60);
+        }else {
             graphics.drawImage(this.animations[this.playerState][this.animationIndex], screenX, screenY, 128, 80, null);
+            this.initAttackBox(screenX + 2 * TILES_SIZE, screenY + 15, 45, 60);
         }
 
-        this.renderHitBox(graphics, screenX, screenY);
+        if(showMap) this.game.getPlayMenu().getMap().render(graphics);
+        if(showMinimap) this.game.getPlayMenu().getMap().renderMinimap(graphics);
     }
 
-    public void resetBooleans(){
+    public void resetBooleans() {
         this.setUp(false);
         this.setDown(false);
         this.setLeft(false);
         this.setRight(false);
     }
 
-    private void loadAnimations(){
+    private void loadAnimations() {
         this.animations = new BufferedImage[11][7];
-        for(int j = 0; j < this.animations.length; j++){
-            for(int i = 0; i < this.animations[j].length; i++){
+        for (int j = 0; j < this.animations.length; j++) {
+            for (int i = 0; i < this.animations[j].length; i++) {
                 this.animations[j][i] = PLAYER_IMAGE.getSubimage(i * 50, j * 37, 50, 37);
             }
         }
     }
 
-    private void updateAnimationTick(){
+    private void updateAnimationTick() {
         this.animationTick++;
 
-        if(this.animationTick >= this.animationSpeed){
+        if (this.animationTick >= this.animationSpeed) {
             this.animationTick = 0;
             this.animationIndex++;
 
-            if(this.animationIndex >= PlayerState.getSpriteAmount(this.playerState)){
+            if (this.animationIndex >= PlayerState.getSpriteAmount(this.playerState)) {
                 this.animationIndex = 0;
+                setAttacking(false);
             }
         }
     }
 
-    private void setAnimation(){
-        if(this.isMoving()){
+    private void setAnimation() {
+        int startAnimation = playerState;
+
+        if (this.isMoving()) {
             this.playerState = PlayerState.RUNNING;
-        }else{
+        } else {
             this.playerState = PlayerState.IDLE;
+        }
+
+        if (isAttacking()) {
+            this.playerState = PlayerState.ATTACKING;
+        }
+
+        if (startAnimation != playerState) {
+            this.animationTick = 0;
+            this.animationIndex = 0;
         }
     }
 
-    private void renderStats(final Graphics graphics){
+    private void updatePosition() {
+        collision = false;
+
+        this.game.getCollisionChecker().checkTile(this);
+
+        //this.game.getPlayMenu().getObjectManager().pickUp(this.game.getCollisionChecker().checkObject(this, true), this);
+        //this.game.getPlayMenu().getEnemyManager().attackPlayer(this.game.getCollisionChecker().checkEnemy(this, true), this);
+
+        if (!collision) {
+            float speedX = 0, speedY = 0;
+
+            if (this.isUp()) speedY -= this.getSpeed();
+            if (this.isDown()) speedY += this.getSpeed();
+            if (this.isLeft()) {
+                speedX -= this.getSpeed();
+                wasFacingLeft = true;
+            }
+            if (this.isRight()) {
+                speedX += this.getSpeed();
+                wasFacingLeft = false;
+            }
+
+            if (speedX != 0 && speedY != 0) {
+                final float length = (float) Math.sqrt(speedX * speedX + speedY * speedY);
+                speedX = (speedX / length) * this.getSpeed();
+                speedY = (speedY / length) * this.getSpeed();
+            }
+
+            this.setWorldX(this.getWorldX() + speedX);
+            this.setWorldY(this.getWorldY() + speedY);
+        } else {
+            wasFacingLeft = this.isLeft();
+        }
+    }
+
+    private void renderStats(final Graphics graphics) {
         graphics.setColor(new Color(0, 0, 0, 50));
         graphics.fillRect(5, 5, 250, 50);
 
@@ -142,17 +174,52 @@ public class Player extends Entity {
                 case KeyEvent.VK_S -> setDown(true);
                 case KeyEvent.VK_Q -> setLeft(true);
                 case KeyEvent.VK_D -> setRight(true);
+                case KeyEvent.VK_M -> {
+                    if(showMap){
+                        showMap = false;
+
+                        if(hasMiniMap) showMinimap = true;
+                    }else{
+                        showMap = true;
+                        showMinimap = false;
+                    }
+                }
+                case KeyEvent.VK_UP -> {
+                    if(showMap) return;
+
+                    if(showMinimap){
+                        showMinimap = false;
+                        hasMiniMap = false;
+                    }else{
+                        showMinimap = true;
+                        hasMiniMap = true;
+                    }
+                }
             }
         }
     }
 
-    public void keyReleased(KeyEvent e){
+    public void keyReleased(KeyEvent e) {
         if (GameState.getCurrentState().equals(GameState.PLAY)) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_Z -> setUp(false);
                 case KeyEvent.VK_S -> setDown(false);
                 case KeyEvent.VK_Q -> setLeft(false);
                 case KeyEvent.VK_D -> setRight(false);
+            }
+        }
+    }
+
+    public void mousePressed(MouseEvent e) {
+        if (GameState.getCurrentState().equals(GameState.PLAY)) {
+            if(e.getButton() == MouseEvent.BUTTON1) {
+                if(isAttacking()) return;
+
+                setAttacking(true);
+
+                for(EnemyHandler enemiesInRange : this.game.getPlayMenu().getEnemyManager().getEnemiesInRange(this.game.getPlayMenu().getPlayer())){
+                    enemiesInRange.applyDamage(this.getDamage());
+                }
             }
         }
     }

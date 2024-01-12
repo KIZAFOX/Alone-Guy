@@ -35,6 +35,7 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
     @Override
     public void mousePressed(MouseEvent e) {
         this.gamePanel.getGame().getMainMenu().mousePressed(e);
+        this.gamePanel.getGame().getPlayMenu().getPlayer().mousePressed(e);
     }
 
     /**

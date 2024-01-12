@@ -1,9 +1,12 @@
-package fr.kizafox.aloneguy.game.world;
+package fr.kizafox.aloneguy.game.world.utils;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
 import fr.kizafox.aloneguy.game.entity.enemy.EnemyHandler;
 import fr.kizafox.aloneguy.game.object.ObjectHandler;
+import fr.kizafox.aloneguy.game.world.tile.TileManager;
+
+import java.util.List;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
@@ -127,69 +130,68 @@ public class CollisionChecker {
                 objectHandler[i].getHitBox().y = objectHandler[i].getSolidAreaDefaultY();
             }
         }
-
         return index;
     }
 
     public int checkEnemy(final Entity entity, final boolean player){
         int index = 999;
 
-        final EnemyHandler[] objectHandler = this.game.getPlayMenu().getEnemyManager().getEnemies();
+        final List<EnemyHandler> enemyHandlers = this.game.getPlayMenu().getEnemyManager().getEnemies();
 
-        for(int i = 0; i < objectHandler.length; i++){
-            if(objectHandler[i] != null){
+        for(EnemyHandler enemies : enemyHandlers){
+            if(enemies != null){
                 entity.getHitBox().x = (int) (entity.getWorldX() + entity.getHitBox().x);
                 entity.getHitBox().y = (int) (entity.getWorldY() + entity.getHitBox().y);
 
-                objectHandler[i].getHitBox().x = (int) (objectHandler[i].getWorldX() + objectHandler[i].getHitBox().x);
-                objectHandler[i].getHitBox().y = (int) (objectHandler[i].getWorldY() + objectHandler[i].getHitBox().y);
+                enemies.getHitBox().x = (int) (enemies.getWorldX() + enemies.getHitBox().x);
+                enemies.getHitBox().y = (int) (enemies.getWorldY() + enemies.getHitBox().y);
 
                 if(entity.isUp()){
                     entity.getHitBox().y -= (int) entity.getSpeed();
 
-                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
-                        if(objectHandler[i].isCollision()){
+                    if(entity.getHitBox().intersects(enemies.getHitBox())){
+                        if(enemies.isCollision()){
                             entity.collision = true;
                         }
 
                         if(player){
-                            index = i;
+                            index = enemyHandlers.indexOf(enemies);
                         }
                     }
                 }else if(entity.isDown()){
                     entity.getHitBox().y += (int) entity.getSpeed();
 
-                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
-                        if(objectHandler[i].isCollision()){
+                    if(entity.getHitBox().intersects(enemies.getHitBox())){
+                        if(enemies.isCollision()){
                             entity.collision = true;
                         }
 
                         if(player){
-                            index = i;
+                            index = enemyHandlers.indexOf(enemies);
                         }
                     }
                 }else if(entity.isLeft()){
                     entity.getHitBox().x -= (int) entity.getSpeed();
 
-                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
-                        if(objectHandler[i].isCollision()){
+                    if(entity.getHitBox().intersects(enemies.getHitBox())){
+                        if(enemies.isCollision()){
                             entity.collision = true;
                         }
 
                         if(player){
-                            index = i;
+                            index = enemyHandlers.indexOf(enemies);
                         }
                     }
                 }else if(entity.isRight()){
                     entity.getHitBox().x += (int) entity.getSpeed();
 
-                    if(entity.getHitBox().intersects(objectHandler[i].getHitBox())){
-                        if(objectHandler[i].isCollision()){
+                    if(entity.getHitBox().intersects(enemies.getHitBox())){
+                        if(enemies.isCollision()){
                             entity.collision = true;
                         }
 
                         if(player){
-                            index = i;
+                            index = enemyHandlers.indexOf(enemies);
                         }
                     }
                 }
@@ -197,22 +199,10 @@ public class CollisionChecker {
                 entity.getHitBox().x = entity.getSolidAreaDefaultX();
                 entity.getHitBox().y = entity.getSolidAreaDefaultY();
 
-                objectHandler[i].getHitBox().x = objectHandler[i].getSolidAreaDefaultX();
-                objectHandler[i].getHitBox().y = objectHandler[i].getSolidAreaDefaultY();
+                enemies.getHitBox().x = enemies.getSolidAreaDefaultX();
+                enemies.getHitBox().y = enemies.getSolidAreaDefaultY();
             }
         }
-
         return index;
     }
-
-    // Ajoutez cette méthode à votre classe CollisionChecker
-    public boolean checkTileCollision(float x, float y) {
-        int entityLeftColumn = (int) (x / TILES_SIZE);
-        int entityTopRow = (int) (y / TILES_SIZE);
-
-        int tileNumber = this.game.getPlayMenu().getTileManager().mapTileNumbers[entityLeftColumn][entityTopRow];
-
-        return !this.game.getPlayMenu().getTileManager().tile[tileNumber].collision;
-    }
-
 }

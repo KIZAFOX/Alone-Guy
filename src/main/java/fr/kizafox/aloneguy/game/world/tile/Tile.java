@@ -1,4 +1,4 @@
-package fr.kizafox.aloneguy.game.world;
+package fr.kizafox.aloneguy.game.world.tile;
 
 import java.awt.image.BufferedImage;
 
