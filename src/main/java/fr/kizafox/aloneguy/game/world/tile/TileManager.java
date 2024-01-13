@@ -2,7 +2,7 @@ package fr.kizafox.aloneguy.game.world.tile;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.player.Player;
-import fr.kizafox.aloneguy.game.utils.ImageRenderer;
+import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 
 import java.awt.*;
 import java.io.*;
@@ -16,9 +16,6 @@ public class TileManager {
 
     protected final Game game;
 
-    private final List<String> filesName;
-    private final List<String> collision;
-
     public final Tile[] tile;
     public final int[][] mapTileNumbers;
 
@@ -27,8 +24,8 @@ public class TileManager {
     public TileManager(final Game game) {
         this.game = game;
 
-        this.filesName = new ArrayList<>();
-        this.collision = new ArrayList<>();
+        final List<String> filesName = new ArrayList<>();
+        final List<String> collision1 = new ArrayList<>();
 
         InputStream inputStream = this.getClass().getResourceAsStream("/map/tiles/data/tiledata.txt");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)));
@@ -37,18 +34,18 @@ public class TileManager {
 
         try {
             while ((line = bufferedReader.readLine()) != null){
-                this.filesName.add(line);
-                this.collision.add(bufferedReader.readLine());
+                filesName.add(line);
+                collision1.add(bufferedReader.readLine());
             }
         }catch (final IOException e){
             throw new RuntimeException(e);
         }
 
-        this.tile = new Tile[this.filesName.size()];
+        this.tile = new Tile[filesName.size()];
 
-        for(int i = 0; i < this.filesName.size(); i++){
-            final String fileName = this.filesName.get(i);
-            final String collision = this.collision.get(i);
+        for(int i = 0; i < filesName.size(); i++){
+            final String fileName = filesName.get(i);
+            final String collision = collision1.get(i);
 
             this.tile[i] = new Tile();
             this.tile[i].image = ImageRenderer.load("map/tiles/" + fileName);
@@ -112,12 +109,12 @@ public class TileManager {
 
             final Player player = this.game.getPlayMenu().getPlayer();
 
-            int screenX = (int) (worldX - player.getWorldX() + player.screenX), screenY = (int) (worldY - player.getWorldY() + player.screenY);
+            int screenX = (int) (worldX - player.getWorldX() + player.getScreenX()), screenY = (int) (worldY - player.getWorldY() + player.getScreenY());
 
-            if(worldX + TILES_SIZE > player.getWorldX() - player.screenX &&
-                    worldX - TILES_SIZE < player.getWorldX() + player.screenX &&
-                    worldY + TILES_SIZE > player.getWorldY() - player.screenY &&
-                    worldY - TILES_SIZE < player.getWorldY() + player.screenY){
+            if(worldX + TILES_SIZE > player.getWorldX() - player.getScreenX() &&
+                    worldX - TILES_SIZE < player.getWorldX() + player.getScreenX() &&
+                    worldY + TILES_SIZE > player.getWorldY() - player.getScreenY() &&
+                    worldY - TILES_SIZE < player.getWorldY() + player.getScreenY()){
                 graphics.drawImage(this.tile[tileNumber].image, screenX, screenY, TILES_SIZE, TILES_SIZE, null);
             }
 

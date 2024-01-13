@@ -6,27 +6,26 @@ import fr.kizafox.aloneguy.game.entity.player.Player;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class EnemyManager {
 
     protected final Game game;
 
-    private final List<EnemyHandler> enemies;
+    private final LinkedList<EnemyHandler> enemies;
 
     public EnemyManager(final Game game) {
         this.game = game;
 
-        this.enemies = new ArrayList<>();
-        this.enemies.add(new Zombie(game));
+        this.enemies = new LinkedList<>();
+        this.enemies.add(new Zombie());
     }
 
     public void update() {
-        final List<EnemyHandler> enemiesCopy = new ArrayList<>(this.enemies);
-
-        for (EnemyHandler enemy : enemiesCopy) {
+        for (EnemyHandler enemy : this.enemies) {
             if (enemy != null) {
-                enemy.update();
+                enemy.update(game);
             }
         }
     }
@@ -39,17 +38,12 @@ public class EnemyManager {
         }
     }
 
-    public void attackPlayer(final int index, final Player player){
-        if(index != 999){
-            this.getEnemy(index).enemyAttack(player);
-        }
-    }
-
     public List<EnemyHandler> getEnemiesInRange(final Player player) {
         final List<EnemyHandler> enemiesInRange = new ArrayList<>();
 
         for(final EnemyHandler enemy : this.game.getPlayMenu().getEnemyManager().getEnemies()) {
-            final int deltaX = (int) Math.abs(enemy.getWorldX() - player.getWorldX()), deltaY = (int) Math.abs(enemy.getWorldY() - player.getWorldY());
+            final int deltaX = (int) Math.abs(enemy.x - player.getScreenX());
+            final int deltaY = (int) Math.abs(enemy.y - player.getScreenY());
 
             if(deltaX < 100 && deltaY < 100) {
                 enemiesInRange.add(enemy);

@@ -8,7 +8,7 @@ public class WindowUtils {
 
     public static void drawCenteredString(Graphics graphics, String text, int fontSize, Color color, int tileRow, int tileSize) {
         try {
-            final InputStream fontStream = WindowUtils.class.getResourceAsStream("/fonts/Daydream.ttf");
+            final InputStream fontStream = WindowUtils.class.getResourceAsStream("/fonts/BabaMediumPixels.ttf");
 
             if (fontStream != null) {
                 final Font customFont = Font.createFont(Font.TRUETYPE_FONT, fontStream);

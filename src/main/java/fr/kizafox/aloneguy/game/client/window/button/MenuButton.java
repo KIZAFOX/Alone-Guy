@@ -1,7 +1,7 @@
 package fr.kizafox.aloneguy.game.client.window.button;
 
 import fr.kizafox.aloneguy.game.client.status.GameState;
-import fr.kizafox.aloneguy.game.utils.ImageRenderer;
+import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

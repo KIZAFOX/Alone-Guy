@@ -3,7 +3,7 @@ package fr.kizafox.aloneguy.game.client.window;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.sub.*;
 import fr.kizafox.aloneguy.game.utils.Colors;
-import fr.kizafox.aloneguy.game.utils.FPSChecker;
+import fr.kizafox.aloneguy.game.utils.fps.FPSChecker;
 import fr.kizafox.aloneguy.game.world.utils.CollisionChecker;
 
 import java.awt.*;

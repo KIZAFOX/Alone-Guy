@@ -3,8 +3,7 @@ package fr.kizafox.aloneguy.game.entity.player;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
-import fr.kizafox.aloneguy.game.entity.enemy.EnemyHandler;
-import fr.kizafox.aloneguy.game.utils.ImageRenderer;
+import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -17,12 +16,6 @@ public class Player extends Entity {
 
     protected final Game game;
 
-    private final BufferedImage PLAYER_IMAGE = ImageRenderer.load(ImageRenderer.PLAYER_SHEET);
-
-    private boolean showMap = false, showMinimap = true, hasMiniMap = true;
-
-    public final int screenX, screenY;
-
     public Player(final Game game) {
         super(EntityType.PLAYER, 14 * TILES_SIZE, 8 * TILES_SIZE, (int) (64 * SCALE), (int) (40 * SCALE), 30.0D, 2);
         this.game = game;
@@ -32,7 +25,7 @@ public class Player extends Entity {
 
         this.loadAnimations();
 
-        this.initHitBox(40, 15, 45, 60);
+        this.initHitBox();
     }
 
     @Override
@@ -40,14 +33,11 @@ public class Player extends Entity {
         if(this.isDead()) GameState.setStatus(GameState.LOSE);
 
         this.updatePosition();
-
-        this.checkLevelUp();
     }
 
     @Override
     public void render(final Graphics graphics) {
-        this.renderStats(graphics);
-
+        this.updateStats(graphics);
         this.updateAnimationTick();
         this.setAnimation();
 
@@ -74,9 +64,39 @@ public class Player extends Entity {
         this.animations = new BufferedImage[11][7];
         for (int j = 0; j < this.animations.length; j++) {
             for (int i = 0; i < this.animations[j].length; i++) {
-                this.animations[j][i] = PLAYER_IMAGE.getSubimage(i * 50, j * 37, 50, 37);
+                this.animations[j][i] =  ImageRenderer.load(ImageRenderer.PLAYER_SHEET).getSubimage(i * 50, j * 37, 50, 37);
             }
         }
+    }
+
+    private void updateStats(final Graphics graphics) {
+        final int
+                statusBarX = (int) (10 * SCALE),
+                statusBarY = (int) (10 * SCALE),
+                statusBarWidth = (int) (192 * SCALE),
+                statusBarHeight = (int) (58 * SCALE);
+
+        graphics.drawImage(ImageRenderer.load(ImageRenderer.PLAYER_HUD), statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
+
+        final int
+                healthBarX = (int) (34 * SCALE),
+                healthBarY = (int) (14 * SCALE),
+                healthBarWidth = (int) (150 * SCALE),
+                healthBarHeight = (int) (4 * SCALE),
+                healthWidth = (int) ((this.health / this.maxHealth) * healthBarWidth);
+
+        graphics.setColor(Color.RED);
+        graphics.fillRect(healthBarX + statusBarX, healthBarY + statusBarY, healthWidth, healthBarHeight);
+
+        final int
+                experienceBarX = (int) (44 * SCALE),
+                experienceBarY = (int) (34 * SCALE),
+                experienceBarWidth = (int) (expToNextLevel * SCALE / this.level),
+                experienceBarHeight = (int) (2 * SCALE),
+                experienceWidth = (int) ((this.currentExp / (double) this.expToNextLevel) * experienceBarWidth);
+
+        graphics.setColor(Color.YELLOW);
+        graphics.fillRect(experienceBarX + statusBarX, experienceBarY + statusBarY, experienceWidth, experienceBarHeight);
     }
 
     private void updateAnimationTick() {
@@ -88,7 +108,7 @@ public class Player extends Entity {
 
             if (this.animationIndex >= PlayerState.getSpriteAmount(this.playerState)) {
                 this.animationIndex = 0;
-                setAttacking(false);
+                this.setAttacking(false);
             }
         }
     }
@@ -97,12 +117,15 @@ public class Player extends Entity {
         int startAnimation = playerState;
 
         if (this.isMoving()) {
+            this.animationSpeed = 5;
             this.playerState = PlayerState.RUNNING;
         } else {
+            this.animationSpeed = 8;
             this.playerState = PlayerState.IDLE;
         }
 
         if (isAttacking()) {
+            this.animationSpeed = 5;
             this.playerState = PlayerState.ATTACKING;
         }
 
@@ -117,9 +140,6 @@ public class Player extends Entity {
 
         this.game.getCollisionChecker().checkTile(this);
 
-        //this.game.getPlayMenu().getObjectManager().pickUp(this.game.getCollisionChecker().checkObject(this, true), this);
-        //this.game.getPlayMenu().getEnemyManager().attackPlayer(this.game.getCollisionChecker().checkEnemy(this, true), this);
-
         if (!collision) {
             float speedX = 0, speedY = 0;
 
@@ -127,11 +147,11 @@ public class Player extends Entity {
             if (this.isDown()) speedY += this.getSpeed();
             if (this.isLeft()) {
                 speedX -= this.getSpeed();
-                wasFacingLeft = true;
+                this.setWasFacingLeft(true);
             }
             if (this.isRight()) {
                 speedX += this.getSpeed();
-                wasFacingLeft = false;
+                this.setWasFacingLeft(false);
             }
 
             if (speedX != 0 && speedY != 0) {
@@ -143,84 +163,60 @@ public class Player extends Entity {
             this.setWorldX(this.getWorldX() + speedX);
             this.setWorldY(this.getWorldY() + speedY);
         } else {
-            wasFacingLeft = this.isLeft();
+            this.setWasFacingLeft(this.isLeft());
         }
     }
 
-    private void renderStats(final Graphics graphics) {
-        graphics.setColor(new Color(0, 0, 0, 50));
-        graphics.fillRect(5, 5, 250, 50);
-
-        int maxHealthWidth = 225;
-        int currentHealthWidth = (int) (this.getHealth() / this.getMaxHealth() * maxHealthWidth);
-
-        currentHealthWidth = Math.min(currentHealthWidth, maxHealthWidth);
-
-        graphics.setColor(Color.RED);
-        graphics.fillRect(15, 15, currentHealthWidth, 10);
-
-        int maxExpWidth = 225;
-        int currentExpWidth = (int) ((double) this.getCurrentExp() / this.getExpToNextLevel() * maxExpWidth);
-        currentExpWidth = Math.min(currentExpWidth, maxExpWidth);
-
-        graphics.setColor(Color.YELLOW);
-        graphics.fillRect(15, 35, currentExpWidth, 10);
-    }
-
-    public void keyPressed(KeyEvent e) {
-        if (GameState.getCurrentState().equals(GameState.PLAY)) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_Z -> setUp(true);
-                case KeyEvent.VK_S -> setDown(true);
-                case KeyEvent.VK_Q -> setLeft(true);
-                case KeyEvent.VK_D -> setRight(true);
+    public void keyPressed(KeyEvent event) {
+        if(GameState.getCurrentState().equals(GameState.PLAY)) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.VK_Z -> this.setUp(true);
+                case KeyEvent.VK_S -> this.setDown(true);
+                case KeyEvent.VK_Q -> this.setLeft(true);
+                case KeyEvent.VK_D -> this.setRight(true);
                 case KeyEvent.VK_M -> {
-                    if(showMap){
-                        showMap = false;
+                    if(this.showMap){
+                        this.showMap = false;
 
-                        if(hasMiniMap) showMinimap = true;
+                        if(this.hasMiniMap) this.showMinimap = true;
                     }else{
-                        showMap = true;
-                        showMinimap = false;
+                        this.showMap = true;
+                        this.showMinimap = false;
                     }
                 }
                 case KeyEvent.VK_UP -> {
-                    if(showMap) return;
+                    if(this.showMap) return;
 
-                    if(showMinimap){
-                        showMinimap = false;
-                        hasMiniMap = false;
+                    if(this.showMinimap){
+                        this.showMinimap = false;
+                        this.hasMiniMap = false;
                     }else{
-                        showMinimap = true;
-                        hasMiniMap = true;
+                        this.showMinimap = true;
+                        this.hasMiniMap = true;
                     }
+
+                    this.gainExperience(1);
                 }
             }
         }
     }
 
     public void keyReleased(KeyEvent e) {
-        if (GameState.getCurrentState().equals(GameState.PLAY)) {
+        if(GameState.getCurrentState().equals(GameState.PLAY)) {
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_Z -> setUp(false);
-                case KeyEvent.VK_S -> setDown(false);
-                case KeyEvent.VK_Q -> setLeft(false);
-                case KeyEvent.VK_D -> setRight(false);
+                case KeyEvent.VK_Z -> this.setUp(false);
+                case KeyEvent.VK_S -> this.setDown(false);
+                case KeyEvent.VK_Q -> this.setLeft(false);
+                case KeyEvent.VK_D -> this.setRight(false);
             }
         }
     }
 
-    public void mousePressed(MouseEvent e) {
-        if (GameState.getCurrentState().equals(GameState.PLAY)) {
-            if(e.getButton() == MouseEvent.BUTTON1) {
-                if(isAttacking()) return;
+    public void mousePressed(MouseEvent event) {
+        if(GameState.getCurrentState().equals(GameState.PLAY) && event.getButton() == MouseEvent.BUTTON1 && !this.isAttacking()) {
+            this.setAttacking(true);
 
-                setAttacking(true);
-
-                for(EnemyHandler enemiesInRange : this.game.getPlayMenu().getEnemyManager().getEnemiesInRange(this.game.getPlayMenu().getPlayer())){
-                    enemiesInRange.applyDamage(this.getDamage());
-                }
-            }
+            this.game.getPlayMenu().getEnemyManager().getEnemiesInRange(this).forEach(enemies -> enemies.receiveDamage(this));
         }
     }
 }

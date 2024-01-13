@@ -3,7 +3,7 @@ package fr.kizafox.aloneguy.game.client.window.sub;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.client.window.button.MenuButton;
-import fr.kizafox.aloneguy.game.utils.ImageRenderer;
+import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 import fr.kizafox.aloneguy.game.utils.sound.SoundPlayer;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
 

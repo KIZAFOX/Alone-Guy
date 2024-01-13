@@ -5,13 +5,13 @@ import fr.kizafox.aloneguy.game.utils.Colors;
 import fr.kizafox.aloneguy.game.utils.GameSettings;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public abstract class Entity {
 
     protected final EntityType entityType;
     protected float worldX, worldY, speed = 1.20F * GameSettings.SCALE;
+    protected int screenX, screenY;
     protected int width, height;
     protected double maxHealth, health;
     protected int damage;
@@ -19,11 +19,12 @@ public abstract class Entity {
     protected Rectangle hitBox, attackBox;
     protected int solidAreaDefaultX, solidAreaDefaultY;
 
+    public boolean showMap = false, showMinimap = true, hasMiniMap = true;
     public boolean up, down, left, right, wasFacingLeft = false, attacking, collision = false;
 
     public BufferedImage[][] animations;
 
-    public int animationTick, animationIndex, animationSpeed = 15;
+    public int animationTick, animationIndex, animationSpeed;
     public int playerState = PlayerState.IDLE;
 
     public Entity(EntityType entityType, float worldX, float worldY, int width, int height, double maxHealth, int damage) {
@@ -46,13 +47,13 @@ public abstract class Entity {
 
     public abstract void render(final Graphics graphics);
 
-    protected void initHitBox(final float x, final float y, final int width, final int height){
-        this.hitBox = new Rectangle((int) x, (int) y, width, height);
+    protected void initHitBox(){
+        this.hitBox = new Rectangle((int) (float) 40, (int) (float) 15, 45, 60);
         this.solidAreaDefaultX = this.hitBox.x;
         this.solidAreaDefaultY = this.hitBox.y;
     }
 
-    protected void renderHitBox(Graphics graphics, int screenX, int screenY){
+    protected void renderHitBox(final Graphics graphics, final int screenX, final int screenY){
         graphics.setColor(Color.RED);
         graphics.drawRect(screenX + this.hitBox.x, screenY + this.hitBox.y, this.hitBox.width, this.hitBox.height);
     }
@@ -61,7 +62,7 @@ public abstract class Entity {
         this.attackBox = new Rectangle((int) x, (int) y, width, height);
     }
 
-    protected void renderAttackBox(Graphics graphics){
+    protected void renderAttackBox(final Graphics graphics){
         if(isAttacking()){
             graphics.setColor(Color.RED);
             graphics.drawRect(this.attackBox.x, this.attackBox.y, this.attackBox.width, this.attackBox.height);
@@ -72,19 +73,8 @@ public abstract class Entity {
         return this.isUp() || this.isDown() || this.isLeft() || this.isRight();
     }
 
-    public void applyDamage(final double damage){
-        this.setHealth(this.getHealth() - damage);
-
-        Game.log(this.getEntityType() + " took " + damage + " damage. (Health: " + this.getHealth() + ")");
-    }
-
     public boolean isDead(){
         return this.health <= 0;
-    }
-
-    public void teleport(final float x, final float y){
-        this.setWorldX(x);
-        this.setWorldY(y);
     }
 
     public void reset() {
@@ -119,6 +109,22 @@ public abstract class Entity {
 
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+
+    public int getScreenX() {
+        return screenX;
+    }
+
+    public void setScreenX(int screenX) {
+        this.screenX = screenX;
+    }
+
+    public int getScreenY() {
+        return screenY;
+    }
+
+    public void setScreenY(int screenY) {
+        this.screenY = screenY;
     }
 
     public int getWidth() {
@@ -189,17 +195,15 @@ public abstract class Entity {
         return String.format("%.2f%%", (double) this.currentExp / this.expToNextLevel * 100);
     }
 
-    public void checkLevelUp() {
+    public void gainExperience(int experience){
+        this.currentExp += experience;
+
         if(this.currentExp >= this.expToNextLevel){
+            currentExp = 0;
             level++;
             Game.log("Congratulations! You leveled up to level " + level + ".");
             expToNextLevel = level * 100;
         }
-    }
-
-    public void gainExperience(int experience){
-        this.currentExp += experience;
-        this.checkLevelUp();
     }
 
     public Rectangle getHitBox() {
@@ -208,6 +212,14 @@ public abstract class Entity {
 
     public void setHitBox(Rectangle hitBox) {
         this.hitBox = hitBox;
+    }
+
+    public Rectangle getAttackBox() {
+        return attackBox;
+    }
+
+    public void setAttackBox(Rectangle attackBox) {
+        this.attackBox = attackBox;
     }
 
     public int getSolidAreaDefaultX() {
@@ -224,6 +236,30 @@ public abstract class Entity {
 
     public void setSolidAreaDefaultY(int solidAreaDefaultY) {
         this.solidAreaDefaultY = solidAreaDefaultY;
+    }
+
+    public boolean isShowMap() {
+        return showMap;
+    }
+
+    public void setShowMap(boolean showMap) {
+        this.showMap = showMap;
+    }
+
+    public boolean isShowMinimap() {
+        return showMinimap;
+    }
+
+    public void setShowMinimap(boolean showMinimap) {
+        this.showMinimap = showMinimap;
+    }
+
+    public boolean isHasMiniMap() {
+        return hasMiniMap;
+    }
+
+    public void setHasMiniMap(boolean hasMiniMap) {
+        this.hasMiniMap = hasMiniMap;
     }
 
     public boolean isUp() {
@@ -256,6 +292,14 @@ public abstract class Entity {
 
     public void setRight(boolean right) {
         this.right = right;
+    }
+
+    public boolean isWasFacingLeft() {
+        return wasFacingLeft;
+    }
+
+    public void setWasFacingLeft(boolean wasFacingLeft) {
+        this.wasFacingLeft = wasFacingLeft;
     }
 
     public boolean isAttacking() {

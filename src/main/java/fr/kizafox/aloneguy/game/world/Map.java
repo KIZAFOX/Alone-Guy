@@ -12,7 +12,6 @@ public class Map {
     protected final Game game;
 
     private final BufferedImage worldMap;
-    private boolean showMinimap = false;
 
     public Map(Game game) {
         this.game = game;
@@ -41,7 +40,7 @@ public class Map {
     }
 
     public void render(Graphics graphics) {
-        graphics.setColor(Color.BLACK);
+        graphics.setColor(new Color(0, 0, 0, 0.5F));
         graphics.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         final int width = 500, height = 500;
