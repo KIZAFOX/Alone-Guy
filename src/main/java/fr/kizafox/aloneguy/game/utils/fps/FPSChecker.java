@@ -1,4 +1,4 @@
-package fr.kizafox.aloneguy.game.utils;
+package fr.kizafox.aloneguy.game.utils.fps;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 
