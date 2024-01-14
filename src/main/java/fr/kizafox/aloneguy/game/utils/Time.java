@@ -8,14 +8,47 @@ import java.time.Duration;
 public class Time {
 
     protected long startTime;
+    protected long pauseTime;
+
+    protected boolean isPaused;
 
     public Time() {
         this.startTime = System.currentTimeMillis();
+        this.pauseTime = 0;
+        this.isPaused = false;
+    }
+
+    public void restart() {
+        this.startTime = System.currentTimeMillis();
+        this.pauseTime = 0;
+        this.isPaused = false;
+    }
+
+    public void pause(){
+        if(!this.isPaused){
+            this.isPaused = true;
+            this.pauseTime = Duration.ofMillis(System.currentTimeMillis() - this.startTime).getSeconds();
+        }
+    }
+
+    public void resume(){
+        if(this.isPaused){
+            this.isPaused = false;
+            this.startTime = System.currentTimeMillis() - (this.pauseTime * 1000);
+            this.pauseTime = 0;
+        }
     }
 
     public String getFormattedTime() {
-        final long seconds = Duration.ofMillis(System.currentTimeMillis() - startTime).getSeconds();
-        return String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
+        long currentTime;
+
+        if(this.isPaused) {
+            currentTime = this.pauseTime;
+        }else{
+            currentTime = Duration.ofMillis(System.currentTimeMillis() - this.startTime).getSeconds();
+        }
+
+        return String.format("%02d:%02d:%02d", currentTime / 3600, (currentTime % 3600) / 60, currentTime % 60);
     }
 
     public long getStartTime() {
@@ -24,5 +57,21 @@ public class Time {
 
     public void setStartTime(long startTime) {
         this.startTime = startTime;
+    }
+
+    public long getPauseTime() {
+        return pauseTime;
+    }
+
+    public void setPauseTime(long pauseTime) {
+        this.pauseTime = pauseTime;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(boolean paused) {
+        isPaused = paused;
     }
 }

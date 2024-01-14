@@ -1,5 +1,6 @@
 package fr.kizafox.aloneguy.game.client.window.sub;
 
+import fr.kizafox.aloneguy.game.client.inputs.mouse.MouseInputs;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.enemy.EnemyManager;
@@ -11,9 +12,10 @@ import fr.kizafox.aloneguy.game.world.Map;
 import fr.kizafox.aloneguy.game.world.tile.TileManager;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.time.Duration;
 
-public class PlayMenu extends WindowAbstract{
+public class PlayMenu extends WindowAbstract implements ActionListener{
 
     protected final Game game;
 
@@ -59,9 +61,32 @@ public class PlayMenu extends WindowAbstract{
         this.map = new Map(this.game);
     }
 
-    public void reset() {
-        GameState.setStatus(GameState.MENU);
+    public void reset(GameState gameState) {
+        GameState.setStatus(gameState);
         this.player.reset();
+        this.enemyManager.reset();
+        this.time.restart();
+        this.game.getPauseMenu().paused = false;
+    }
+
+    @Override
+    public void mousePressed(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent event) {
+
     }
 
     public Game getGame() {

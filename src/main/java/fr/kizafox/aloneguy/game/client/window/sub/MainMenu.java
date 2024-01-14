@@ -2,7 +2,7 @@ package fr.kizafox.aloneguy.game.client.window.sub;
 
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
-import fr.kizafox.aloneguy.game.client.window.button.MenuButton;
+import fr.kizafox.aloneguy.game.client.window.buttons.MenuButton;
 import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 import fr.kizafox.aloneguy.game.utils.sound.SoundPlayer;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
-public class MainMenu extends WindowAbstract{
+public class MainMenu extends WindowAbstract implements ActionListener{
 
     protected final Game game;
 
@@ -45,6 +45,7 @@ public class MainMenu extends WindowAbstract{
         Arrays.stream(buttons).forEach(button -> button.render(graphics));
     }
 
+    @Override
     public void mousePressed(MouseEvent event) {
         if(GameState.getCurrentState().equals(GameState.MENU)){
             Arrays.stream(buttons).forEach(button -> {
@@ -56,6 +57,7 @@ public class MainMenu extends WindowAbstract{
         }
     }
 
+    @Override
     public void mouseReleased(MouseEvent event) {
         if(GameState.getCurrentState().equals(GameState.MENU)){
             Arrays.stream(buttons).forEach(button -> {
@@ -74,6 +76,12 @@ public class MainMenu extends WindowAbstract{
         }
     }
 
+    @Override
+    public void mouseDragged(MouseEvent event) {
+
+    }
+
+    @Override
     public void mouseMoved(MouseEvent event) {
         if(GameState.getCurrentState().equals(GameState.MENU)){
             Arrays.asList(buttons).forEach(button -> button.setMouseOver(false));

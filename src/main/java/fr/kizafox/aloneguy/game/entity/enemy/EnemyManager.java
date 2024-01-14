@@ -19,7 +19,7 @@ public class EnemyManager {
         this.game = game;
 
         this.enemies = new LinkedList<>();
-        this.enemies.add(new Zombie());
+        this.addEnemies();
     }
 
     public void update() {
@@ -63,6 +63,15 @@ public class EnemyManager {
 
     public void removeEnemy(final int index){
         this.enemies.remove(index);
+    }
+
+    public void addEnemies() {
+        this.enemies.add(new Zombie());
+    }
+
+    public void reset() {
+        this.enemies.clear();
+        this.addEnemies();
     }
 
     public Game getGame() {

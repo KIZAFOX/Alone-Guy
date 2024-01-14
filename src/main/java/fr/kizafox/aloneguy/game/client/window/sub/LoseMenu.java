@@ -1,13 +1,15 @@
 package fr.kizafox.aloneguy.game.client.window.sub;
 
+import fr.kizafox.aloneguy.game.client.inputs.mouse.MouseInputs;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
-public class LoseMenu extends WindowAbstract{
+public class LoseMenu extends WindowAbstract implements ActionListener{
 
     protected final Game game;
 
@@ -27,5 +29,25 @@ public class LoseMenu extends WindowAbstract{
 
         WindowUtils.drawCenteredString(graphics, NAME + " - VOUS AVEZ PERDU", 30, Color.WHITE, 4, 20);
         WindowUtils.drawCenteredString(graphics, "Appuie sur Echap pour revenir au menu principal", 20, Color.WHITE, 6, 20);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent event) {
+
     }
 }

@@ -2,6 +2,7 @@ package fr.kizafox.aloneguy.game.entity;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.utils.Colors;
+import fr.kizafox.aloneguy.game.utils.Constants;
 import fr.kizafox.aloneguy.game.utils.GameSettings;
 
 import java.awt.*;
@@ -9,7 +10,6 @@ import java.awt.image.BufferedImage;
 
 public abstract class Entity {
 
-    protected final EntityType entityType;
     protected float worldX, worldY, speed = 1.20F * GameSettings.SCALE;
     protected int screenX, screenY;
     protected int width, height;
@@ -25,10 +25,9 @@ public abstract class Entity {
     public BufferedImage[][] animations;
 
     public int animationTick, animationIndex, animationSpeed;
-    public int playerState = PlayerState.IDLE;
+    public int playerState = Constants.PlayerState.IDLE;
 
-    public Entity(EntityType entityType, float worldX, float worldY, int width, int height, double maxHealth, int damage) {
-        this.entityType = entityType;
+    public Entity(float worldX, float worldY, int width, int height, double maxHealth, int damage) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.width = width;
@@ -38,8 +37,8 @@ public abstract class Entity {
         this.damage = damage;
 
         System.out.println();
-        Game.log(Colors.YELLOW + "Entity: " + entityType + " loaded.");
-        Game.log(Colors.YELLOW + "WorldX: " + this.worldX + " - WorldY: " + this.worldY + " - Width: " + this.width + " - Height: " + this.height + " - MaxHealth: " + this.maxHealth);
+        Game.log(Colors.YELLOW + "Entity: " + this.getClass().getSimpleName() + " loaded.");
+        Game.log(Colors.YELLOW + "WorldX: " + this.worldX + " - WorldY: " + this.worldY + " - MaxHealth: " + this.maxHealth + " - Damage: " + this.damage);
         System.out.println();
     }
 
@@ -75,16 +74,6 @@ public abstract class Entity {
 
     public boolean isDead(){
         return this.health <= 0;
-    }
-
-    public void reset() {
-        this.setWorldX(this.worldX);
-        this.setWorldY(this.worldY);
-        this.setHealth(this.maxHealth);
-    }
-
-    public EntityType getEntityType() {
-        return entityType;
     }
 
     public float getWorldX() {
@@ -356,34 +345,5 @@ public abstract class Entity {
 
     public void setPlayerState(int playerState) {
         this.playerState = playerState;
-    }
-
-    public enum EntityType {
-        PLAYER,
-        ENEMY;
-    }
-
-    public static class PlayerState {
-        public static final int IDLE = 0;
-        public static final int RUNNING = 1;
-        public static final int ATTACKING = 7;
-        public static final int DYING = 9;
-
-        public static int getSpriteAmount(final int playerState){
-            switch (playerState){
-                case IDLE, ATTACKING -> {
-                    return 4;
-                }
-                case RUNNING -> {
-                    return 6;
-                }
-                case DYING -> {
-                    return 5;
-                }
-                default -> {
-                    return 1;
-                }
-            }
-        }
     }
 }

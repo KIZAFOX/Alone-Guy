@@ -3,6 +3,8 @@ package fr.kizafox.aloneguy.game.entity.player;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
+import fr.kizafox.aloneguy.game.entity.enemy.EnemyHandler;
+import fr.kizafox.aloneguy.game.utils.Constants;
 import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 
 import java.awt.*;
@@ -17,7 +19,7 @@ public class Player extends Entity {
     protected final Game game;
 
     public Player(final Game game) {
-        super(EntityType.PLAYER, 14 * TILES_SIZE, 8 * TILES_SIZE, (int) (64 * SCALE), (int) (40 * SCALE), 30.0D, 2);
+        super(14 * TILES_SIZE, 8 * TILES_SIZE, (int) (64 * SCALE), (int) (40 * SCALE), 30.0D, 2);
         this.game = game;
 
         this.screenX = ((GAME_WIDTH / 2) - (TILES_SIZE / 2));
@@ -38,8 +40,11 @@ public class Player extends Entity {
     @Override
     public void render(final Graphics graphics) {
         this.updateStats(graphics);
-        this.updateAnimationTick();
-        this.setAnimation();
+
+        if(GameState.getCurrentState().equals(GameState.PLAY)){
+            this.updateAnimationTick();
+            this.setAnimation();
+        }
 
         if(wasFacingLeft) {
             graphics.drawImage(ImageRenderer.flipImage(this.animations[this.playerState][this.animationIndex]), screenX, screenY, 128, 80, null);
@@ -58,6 +63,30 @@ public class Player extends Entity {
         this.setDown(false);
         this.setLeft(false);
         this.setRight(false);
+    }
+
+
+    public void reset() {
+        this.setWorldX(this.worldX);
+        this.setWorldY(this.worldY);
+
+        this.setScreenX(this.screenX);
+        this.setScreenY(this.screenY);
+
+        this.setHealth(this.maxHealth);
+
+        this.setCurrentExp(0);
+        this.setLevel(0);
+        this.setExpToNextLevel(100);
+
+        this.resetBooleans();
+    }
+
+    public boolean isInAttackRange(EnemyHandler enemy) {
+        final int deltaX = (int) Math.abs(enemy.x - this.getScreenX());
+        final int deltaY = (int) Math.abs(enemy.y - this.getScreenY());
+
+        return deltaX < 100 && deltaY < 100;
     }
 
     private void loadAnimations() {
@@ -106,7 +135,7 @@ public class Player extends Entity {
             this.animationTick = 0;
             this.animationIndex++;
 
-            if (this.animationIndex >= PlayerState.getSpriteAmount(this.playerState)) {
+            if (this.animationIndex >= Constants.PlayerState.getSpriteAmount(this.playerState)) {
                 this.animationIndex = 0;
                 this.setAttacking(false);
             }
@@ -118,15 +147,15 @@ public class Player extends Entity {
 
         if (this.isMoving()) {
             this.animationSpeed = 5;
-            this.playerState = PlayerState.RUNNING;
+            this.playerState = Constants.PlayerState.RUNNING;
         } else {
             this.animationSpeed = 8;
-            this.playerState = PlayerState.IDLE;
+            this.playerState = Constants.PlayerState.IDLE;
         }
 
         if (isAttacking()) {
             this.animationSpeed = 5;
-            this.playerState = PlayerState.ATTACKING;
+            this.playerState = Constants.PlayerState.ATTACKING;
         }
 
         if (startAnimation != playerState) {

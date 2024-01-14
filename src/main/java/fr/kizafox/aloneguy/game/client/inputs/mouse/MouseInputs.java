@@ -1,5 +1,6 @@
 package fr.kizafox.aloneguy.game.client.inputs.mouse;
 
+import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.GamePanel;
 import fr.kizafox.aloneguy.game.client.window.sub.MainMenu;
 
@@ -36,6 +37,7 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
     public void mousePressed(MouseEvent e) {
         this.gamePanel.getGame().getMainMenu().mousePressed(e);
         this.gamePanel.getGame().getPlayMenu().getPlayer().mousePressed(e);
+        this.gamePanel.getGame().getPauseMenu().mousePressed(e);
     }
 
     /**
@@ -46,6 +48,7 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
     @Override
     public void mouseReleased(MouseEvent e) {
         this.gamePanel.getGame().getMainMenu().mouseReleased(e);
+        this.gamePanel.getGame().getPauseMenu().mouseReleased(e);
     }
 
     /**
@@ -83,7 +86,7 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        this.gamePanel.getGame().getPauseMenu().mouseDragged(e);
     }
 
     /**
@@ -95,5 +98,6 @@ public class MouseInputs extends MouseAdapter implements MouseListener, MouseMot
     @Override
     public void mouseMoved(MouseEvent e) {
         this.gamePanel.getGame().getMainMenu().mouseMoved(e);
+        this.gamePanel.getGame().getPauseMenu().mouseMoved(e);
     }
 }

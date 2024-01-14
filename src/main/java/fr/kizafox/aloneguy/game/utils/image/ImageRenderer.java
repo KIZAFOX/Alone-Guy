@@ -10,9 +10,14 @@ import java.io.InputStream;
 
 public class ImageRenderer {
 
-    public static final String BACKGROUND = "background.jpg";
+    public static final String BACKGROUND = "ui/background.jpg";
 
-    public static final String BUTTON_ATLAS = "button_atlas.png";
+    public static final String BUTTON_ATLAS = "ui/button_atlas.png";
+
+    public static final String PAUSE_MENU = "ui/pause/pause_menu.png";
+    public static final String SOUND_BUTTON = "ui/pause/sound_button.png";
+    public static final String URM_BUTTONS = "ui/pause/urm_buttons.png";
+    public static final String VOLUME_BUTTONS = "ui/pause/volume_buttons.png";
 
     public static final String PLAYER_SHEET = "sprites/player/player_sheet.png";
 

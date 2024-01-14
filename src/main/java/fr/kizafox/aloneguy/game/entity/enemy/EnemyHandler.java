@@ -3,8 +3,11 @@ package fr.kizafox.aloneguy.game.entity.enemy;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.player.Player;
 import fr.kizafox.aloneguy.game.utils.Colors;
+import fr.kizafox.aloneguy.game.utils.Constants;
+import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Done by @KIZAFOX on {12/01/2024} at 22:07.
@@ -15,6 +18,8 @@ public abstract class EnemyHandler {
     public int expGain;
     public double maxHealth, health, speed, damage;
 
+    private long lastAttackTime;
+
     public EnemyHandler(final float x, final float y, final int expGain, final double maxHealth, final double speed, final double damage) {
         this.x = x;
         this.y = y;
@@ -24,7 +29,6 @@ public abstract class EnemyHandler {
         this.speed = speed;
         this.damage = damage;
 
-        System.out.println();
         Game.log(Colors.YELLOW + "Enemy: " + this.getClass().getSimpleName() + " loaded.");
         Game.log(Colors.YELLOW + "WorldX: " + this.x + " - WorldY: " + this.y + " - MaxHealth: " + this.maxHealth + " - Speed: " + this.speed + " - Damage: " + this.damage);
         System.out.println();
@@ -38,8 +42,16 @@ public abstract class EnemyHandler {
             player.gainExperience(this.expGain);
         }
 
-        float
-                playerX = player.getScreenX(),
+        long currentTime = System.currentTimeMillis(), attackCooldown = 1000;
+
+        if(currentTime - lastAttackTime >= attackCooldown) {
+            if(player.isInAttackRange(this)) {
+                player.setHealth(player.getHealth() - this.damage);
+                lastAttackTime = currentTime;
+            }
+        }
+
+        float playerX = player.getScreenX(),
                 playerY = player.getScreenY(),
 
                 deltaX = playerX - this.x,
@@ -51,6 +63,7 @@ public abstract class EnemyHandler {
 
         this.x += (float) (directionX * speed);
         this.y += (float) (directionY * speed);
+
     }
 
     public abstract void render(final Graphics graphics);

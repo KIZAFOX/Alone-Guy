@@ -54,10 +54,7 @@ public class Game {
                 case PLAY -> this.playMenu.update();
                 case SETTINGS -> this.settingsMenu.update();
                 case LOSE -> this.loseMenu.update();
-                case PAUSE -> {
-                    this.playMenu.update();
-                    this.pauseMenu.update();
-                }
+                case PAUSE -> this.pauseMenu.update();
                 default -> System.exit(0);
             }
         }

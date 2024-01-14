@@ -37,8 +37,10 @@ public class KeyBoardInputs implements KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (GameState.getCurrentState()){
             case PLAY -> {
-                if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P){
+                    GameState.setStatus(GameState.PAUSE);
                     this.gamePanel.getGame().getPauseMenu().setPause(GameState.PAUSE, true);
+                    this.gamePanel.getGame().getPlayMenu().getTime().pause();
                 }else {
                     this.gamePanel.getGame().getPlayMenu().getPlayer().keyPressed(e);
                 }
@@ -47,10 +49,13 @@ public class KeyBoardInputs implements KeyListener {
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE) GameState.setStatus(GameState.MENU);
             }
             case PAUSE -> {
-                if(e.getKeyCode() == KeyEvent.VK_ESCAPE) this.gamePanel.getGame().getPauseMenu().setPause(GameState.PLAY, false);
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_P){
+                    this.gamePanel.getGame().getPauseMenu().setPause(GameState.PLAY, false);
+                    this.gamePanel.getGame().getPlayMenu().getTime().resume();
+                }
             }
             case LOSE -> {
-                if(e.getKeyCode() == KeyEvent.VK_ESCAPE) this.gamePanel.getGame().getPlayMenu().reset();
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE) this.gamePanel.getGame().getPlayMenu().reset(GameState.MENU);
             }
         }
     }

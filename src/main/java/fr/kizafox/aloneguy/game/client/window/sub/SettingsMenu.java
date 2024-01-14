@@ -1,12 +1,14 @@
 package fr.kizafox.aloneguy.game.client.window.sub;
 
+import fr.kizafox.aloneguy.game.client.inputs.mouse.MouseInputs;
 import fr.kizafox.aloneguy.game.utils.WindowUtils;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
-public class SettingsMenu extends WindowAbstract{
+public class SettingsMenu extends WindowAbstract implements ActionListener{
 
     public SettingsMenu() {
     }
@@ -22,5 +24,25 @@ public class SettingsMenu extends WindowAbstract{
         graphics.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
         WindowUtils.drawCenteredString(graphics, NAME + " - Settings", 30, Color.WHITE, 4, 20);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent event) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent event) {
+
     }
 }

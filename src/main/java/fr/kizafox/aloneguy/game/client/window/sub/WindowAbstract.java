@@ -1,6 +1,7 @@
 package fr.kizafox.aloneguy.game.client.window.sub;
 
-import fr.kizafox.aloneguy.game.client.window.button.MenuButton;
+import fr.kizafox.aloneguy.game.client.window.buttons.MenuButton;
+import fr.kizafox.aloneguy.game.client.window.buttons.PauseButton;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -25,5 +26,9 @@ public abstract class WindowAbstract {
 
     public boolean isIn(final MouseEvent mouseEvent, MenuButton menuButton){
         return menuButton.getBounds().contains(mouseEvent.getX(), mouseEvent.getY());
+    }
+
+    public boolean isIn(final MouseEvent mouseEvent, PauseButton pauseButton){
+        return pauseButton.getBounds().contains(mouseEvent.getX(), mouseEvent.getY());
     }
 }
