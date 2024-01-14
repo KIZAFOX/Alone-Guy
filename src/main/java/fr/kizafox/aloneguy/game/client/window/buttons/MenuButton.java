@@ -1,4 +1,4 @@
-package fr.kizafox.aloneguy.game.client.window.button;
+package fr.kizafox.aloneguy.game.client.window.buttons;
 
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
@@ -19,7 +19,7 @@ public class MenuButton {
 
     private Rectangle bounds;
 
-    private static final int
+    private final int
             B_WIDTH_DEFAULT = 140,
             B_HEIGHT_DEFAULT = 56,
 
