@@ -1,6 +1,5 @@
 package fr.kizafox.aloneguy.game.client.window.sub;
 
-import fr.kizafox.aloneguy.game.client.inputs.mouse.MouseInputs;
 
 import java.awt.event.MouseEvent;
 
