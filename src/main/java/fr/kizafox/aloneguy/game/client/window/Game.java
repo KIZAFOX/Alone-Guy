@@ -4,9 +4,13 @@ import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.sub.*;
 import fr.kizafox.aloneguy.game.utils.Colors;
 import fr.kizafox.aloneguy.game.utils.fps.FPSChecker;
+import fr.kizafox.aloneguy.game.utils.github.GitHubAPI;
 import fr.kizafox.aloneguy.game.world.utils.CollisionChecker;
 
 import java.awt.*;
+
+import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
+import static fr.kizafox.aloneguy.game.utils.GameSettings.GAME_HEIGHT;
 
 /**
  * Created at 19/12/2023 at 06:35
@@ -73,10 +77,20 @@ public class Game {
                 }
             }
         }
+
+        renderText(graphics, VERSION_NAME + " " + VERSION, 30, new Color(255, 255, 255, 75), GAME_WIDTH - 500, GAME_HEIGHT - 20);
     }
 
     public static void log(final String message){
         System.out.println(Colors.GREEN + "[Log-AloneGuy] " + message);
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
+
+    public GameWindow getGameWindow() {
+        return gameWindow;
     }
 
     public MainMenu getMainMenu() {
@@ -99,19 +113,15 @@ public class Game {
         return loseMenu;
     }
 
-    public GamePanel getGamePanel() {
-        return gamePanel;
-    }
-
-    public GameWindow getGameWindow() {
-        return gameWindow;
-    }
-
     public CollisionChecker getCollisionChecker() {
         return collisionChecker;
     }
 
     public FPSChecker getFpsChecker() {
         return fpsChecker;
+    }
+
+    public Object getPauseLock() {
+        return pauseLock;
     }
 }

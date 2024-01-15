@@ -10,9 +10,9 @@ import java.io.InputStream;
 
 public class ImageRenderer {
 
-    public static final String BACKGROUND = "ui/background.jpg";
-
-    public static final String BUTTON_ATLAS = "ui/button_atlas.png";
+    public static final String BACKGROUND = "ui/main/background.jpg";
+    public static final String MAIN_MENU = "ui/main/menu_background.png";
+    public static final String BUTTON_ATLAS = "ui/main/button_atlas.png";
 
     public static final String PAUSE_MENU = "ui/pause/pause_menu.png";
     public static final String SOUND_BUTTON = "ui/pause/sound_button.png";
@@ -20,8 +20,10 @@ public class ImageRenderer {
     public static final String VOLUME_BUTTONS = "ui/pause/volume_buttons.png";
 
     public static final String PLAYER_SHEET = "sprites/player/player_sheet.png";
-
     public static final String PLAYER_HUD = "sprites/player/hud/player_hud.png";
+
+    public static final String SLIME_DOWN_1 = "sprites/enemies/slime/greenslime_down_1.png";
+    public static final String SLIME_DOWN_2 = "sprites/enemies/slime/greenslime_down_2.png";
 
     public static final String HEAL_POTION = "sprites/potions/heal_potion.png";
 

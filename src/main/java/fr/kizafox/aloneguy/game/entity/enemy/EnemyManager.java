@@ -1,7 +1,7 @@
 package fr.kizafox.aloneguy.game.entity.enemy;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
-import fr.kizafox.aloneguy.game.entity.enemy.zombie.Zombie;
+import fr.kizafox.aloneguy.game.entity.enemy.slime.Slime;
 import fr.kizafox.aloneguy.game.entity.player.Player;
 
 import java.awt.*;
@@ -41,16 +41,22 @@ public class EnemyManager {
     public List<EnemyHandler> getEnemiesInRange(final Player player) {
         final List<EnemyHandler> enemiesInRange = new ArrayList<>();
 
-        for(final EnemyHandler enemy : this.game.getPlayMenu().getEnemyManager().getEnemies()) {
-            final int deltaX = (int) Math.abs(enemy.x - player.getScreenX());
-            final int deltaY = (int) Math.abs(enemy.y - player.getScreenY());
+        for (final EnemyHandler enemy : this.game.getPlayMenu().getEnemyManager().getEnemies()) {
+            final int deltaX = (int) Math.abs(enemy.getAbsoluteX() - player.getScreenX());
+            final int deltaY = (int) Math.abs(enemy.getAbsoluteY() - player.getScreenY());
 
-            if(deltaX < 100 && deltaY < 100) {
+            if (deltaX < 100 && deltaY < 100 && this.isPlayerFacingEnemy(player, enemy)) {
                 enemiesInRange.add(enemy);
             }
         }
 
         return enemiesInRange;
+    }
+
+    private boolean isPlayerFacingEnemy(Player player, EnemyHandler enemy) {
+        if(player.isWasFacingLeft() && enemy.getAbsoluteX() < player.getScreenX()){
+            return true;
+        }else return !player.isWasFacingLeft() && enemy.getAbsoluteX() > player.getScreenX();
     }
 
     public EnemyHandler getEnemy(int enemyIndex) {
@@ -61,12 +67,8 @@ public class EnemyManager {
         }
     }
 
-    public void removeEnemy(final int index){
-        this.enemies.remove(index);
-    }
-
     public void addEnemies() {
-        this.enemies.add(new Zombie());
+        this.enemies.add(new Slime(this.game));
     }
 
     public void reset() {
@@ -78,7 +80,7 @@ public class EnemyManager {
         return game;
     }
 
-    public List<EnemyHandler> getEnemies() {
+    public LinkedList<EnemyHandler> getEnemies() {
         return enemies;
     }
 }

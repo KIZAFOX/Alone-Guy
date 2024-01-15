@@ -1,6 +1,7 @@
 package fr.kizafox.aloneguy.main;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
+import fr.kizafox.aloneguy.game.utils.github.GitHubAPI;
 
 import javax.swing.*;
 
@@ -15,6 +16,7 @@ import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 public class AloneGuy {
 
     public static void main(String[] args) {
+        GitHubAPI.connect();
         System.out.println();
         System.out.println(RED_BRIGHT +
                 "   ___   __              _____         \n" +
@@ -23,7 +25,6 @@ public class AloneGuy {
                 "/_/ |_/_/\\___/_//_/\\__/\\___/\\_,_/\\_, /\n" +
                 "                                 /___/ \n"
         );
-
 
         System.out.println(BLUE + "@Author: " + GREEN_BOLD + AUTHORS[0]);
         System.out.println(BLUE + "@Description: " + GREEN_BOLD + DESCRIPTION);

@@ -1,19 +1,17 @@
 package fr.kizafox.aloneguy.game.client.window.sub;
 
-import fr.kizafox.aloneguy.game.client.inputs.mouse.MouseInputs;
 import fr.kizafox.aloneguy.game.client.status.GameState;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.enemy.EnemyManager;
 import fr.kizafox.aloneguy.game.entity.player.Player;
-import fr.kizafox.aloneguy.game.utils.GameSettings;
 import fr.kizafox.aloneguy.game.utils.Time;
-import fr.kizafox.aloneguy.game.utils.WindowUtils;
 import fr.kizafox.aloneguy.game.world.Map;
 import fr.kizafox.aloneguy.game.world.tile.TileManager;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.time.Duration;
+
+import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
 public class PlayMenu extends WindowAbstract implements ActionListener{
 
@@ -51,9 +49,7 @@ public class PlayMenu extends WindowAbstract implements ActionListener{
         this.player.render(graphics);
         this.enemyManager.render(graphics);
 
-        WindowUtils.drawCenteredString(graphics, "In Game (" + this.time.getFormattedTime() + ")", 30, Color.WHITE, 2, 10);
-        WindowUtils.drawCenteredString(graphics, "Level: " + this.getPlayer().getLevel(), 20, Color.WHITE, 5, 10);
-        WindowUtils.drawCenteredString(graphics, this.getPlayer().getCurrentExp() + "/" + this.getPlayer().getExpToNextLevel(), 20, Color.WHITE, 7, 10);
+        renderText(graphics, this.time.getFormattedTime(), 30, Color.WHITE, GAME_WIDTH - 210, 35);
     }
 
     public void init(){

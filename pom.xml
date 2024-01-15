@@ -4,15 +4,29 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>fr.kizafox</groupId>
+    <groupId>fr.kizafox.aloneguy</groupId>
     <artifactId>AloneGuy</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-EarlyAccessVersion</version>
 
+    <name>AloneGuy</name>
+
+    <description>AloneGuy is a 2D game made in Java. (RogueLike)</description>
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <url>https://github.com/KIZAFOX/AloneGuy</url>
+
+    <developers>
+        <developer>
+            <id>KIZAFOX</id>
+            <name>Victor</name>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <build>
         <plugins>
@@ -30,5 +44,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.kohsuke/github-api -->
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.318</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -2,7 +2,7 @@ package fr.kizafox.aloneguy.game.client.window.buttons;
 
 import java.awt.*;
 
-import static fr.kizafox.aloneguy.game.utils.GameSettings.SCALE;
+import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
 /**
  * Done by @KIZAFOX on {14/01/2024} at 13:13.

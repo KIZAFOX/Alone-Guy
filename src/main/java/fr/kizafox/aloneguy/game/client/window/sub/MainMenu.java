@@ -5,7 +5,6 @@ import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.client.window.buttons.MenuButton;
 import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 import fr.kizafox.aloneguy.game.utils.sound.SoundPlayer;
-import fr.kizafox.aloneguy.game.utils.WindowUtils;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -18,13 +17,14 @@ public class MainMenu extends WindowAbstract implements ActionListener{
 
     protected final Game game;
 
-    private final BufferedImage image;
+    private final BufferedImage backgroundImage, backgroundMenu;
     private final MenuButton[] buttons = new MenuButton[3];
 
     public MainMenu(final Game game) {
         this.game = game;
 
-        this.image = ImageRenderer.load(ImageRenderer.BACKGROUND);
+        this.backgroundImage = ImageRenderer.load(ImageRenderer.BACKGROUND);
+        this.backgroundMenu = ImageRenderer.load(ImageRenderer.MAIN_MENU);
 
         this.buttons[0] = new MenuButton(GAME_WIDTH / 2, (int) (150 * SCALE), 0, GameState.PLAY);
         this.buttons[1] = new MenuButton(GAME_WIDTH / 2, (int) (220 * SCALE), 1, GameState.SETTINGS);
@@ -38,9 +38,8 @@ public class MainMenu extends WindowAbstract implements ActionListener{
 
     @Override
     public void render(Graphics graphics) {
-        graphics.drawImage(this.image, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
-
-        WindowUtils.drawCenteredString(graphics, NAME, 50, new Color(93, 140, 49), 7, 20);
+        graphics.drawImage(this.backgroundImage, 0, 0, GAME_WIDTH, GAME_HEIGHT, null);
+        graphics.drawImage(this.backgroundMenu, (int) (GAME_WIDTH / 2 -  this.backgroundMenu.getWidth() * SCALE / 2), (int) (45 * SCALE), (int) (this.backgroundMenu.getWidth() * SCALE), (int) (this.backgroundMenu.getHeight() * SCALE), null);
 
         Arrays.stream(buttons).forEach(button -> button.render(graphics));
     }

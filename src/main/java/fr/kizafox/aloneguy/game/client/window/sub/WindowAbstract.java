@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
-import static fr.kizafox.aloneguy.game.utils.GameSettings.TILES_SIZE;
 
 public abstract class WindowAbstract {
 

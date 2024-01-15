@@ -2,7 +2,11 @@ package fr.kizafox.aloneguy.game.world.utils;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.entity.Entity;
+import fr.kizafox.aloneguy.game.entity.enemy.EnemyHandler;
+import fr.kizafox.aloneguy.game.entity.player.Player;
 import fr.kizafox.aloneguy.game.world.tile.TileManager;
+
+import java.util.Arrays;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 

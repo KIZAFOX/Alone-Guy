@@ -146,15 +146,15 @@ public class Player extends Entity {
         int startAnimation = playerState;
 
         if (this.isMoving()) {
-            this.animationSpeed = 5;
+            this.animationSpeed = 10;
             this.playerState = Constants.PlayerState.RUNNING;
         } else {
-            this.animationSpeed = 8;
+            this.animationSpeed = 10;
             this.playerState = Constants.PlayerState.IDLE;
         }
 
         if (isAttacking()) {
-            this.animationSpeed = 5;
+            this.animationSpeed = 7;
             this.playerState = Constants.PlayerState.ATTACKING;
         }
 

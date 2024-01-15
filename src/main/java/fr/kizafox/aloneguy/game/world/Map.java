@@ -55,7 +55,6 @@ public class Map {
                 playerY = (int) ((y + this.game.getPlayMenu().getPlayer().getWorldY() / scale)),
                 playerSize = (int) (TILES_SIZE / scale);
 
-
         final int xOffset = 5, yOffset = 10;
 
         playerX += xOffset;

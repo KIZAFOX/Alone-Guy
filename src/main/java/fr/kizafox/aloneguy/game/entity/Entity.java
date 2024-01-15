@@ -3,14 +3,15 @@ package fr.kizafox.aloneguy.game.entity;
 import fr.kizafox.aloneguy.game.client.window.Game;
 import fr.kizafox.aloneguy.game.utils.Colors;
 import fr.kizafox.aloneguy.game.utils.Constants;
-import fr.kizafox.aloneguy.game.utils.GameSettings;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
+
 public abstract class Entity {
 
-    protected float worldX, worldY, speed = 1.20F * GameSettings.SCALE;
+    protected float worldX, worldY, speed = 1.20F * SCALE;
     protected int screenX, screenY;
     protected int width, height;
     protected double maxHealth, health;
@@ -36,7 +37,6 @@ public abstract class Entity {
         this.health = this.maxHealth;
         this.damage = damage;
 
-        System.out.println();
         Game.log(Colors.YELLOW + "Entity: " + this.getClass().getSimpleName() + " loaded.");
         Game.log(Colors.YELLOW + "WorldX: " + this.worldX + " - WorldY: " + this.worldY + " - MaxHealth: " + this.maxHealth + " - Damage: " + this.damage);
         System.out.println();

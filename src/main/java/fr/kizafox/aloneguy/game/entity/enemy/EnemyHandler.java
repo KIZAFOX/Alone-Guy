@@ -8,19 +8,27 @@ import fr.kizafox.aloneguy.game.utils.image.ImageRenderer;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
  * Done by @KIZAFOX on {12/01/2024} at 22:07.
  **/
 public abstract class EnemyHandler {
 
+    protected final Game game;
+
     public float x, y;
     public int expGain;
     public double maxHealth, health, speed, damage;
 
-    private long lastAttackTime;
+    public BufferedImage image;
+    public int solidAreaDefaultX, solidAreaDefaultY;
+    public Rectangle hitBox;
 
-    public EnemyHandler(final float x, final float y, final int expGain, final double maxHealth, final double speed, final double damage) {
+    public boolean collision = false;
+
+    public EnemyHandler(final Game game, final float x, final float y, final int expGain, final double maxHealth, final double speed, final double damage) {
+        this.game = game;
         this.x = x;
         this.y = y;
         this.expGain = expGain;
@@ -29,54 +37,71 @@ public abstract class EnemyHandler {
         this.speed = speed;
         this.damage = damage;
 
+        this.hitBox = new Rectangle();
+
         Game.log(Colors.YELLOW + "Enemy: " + this.getClass().getSimpleName() + " loaded.");
         Game.log(Colors.YELLOW + "WorldX: " + this.x + " - WorldY: " + this.y + " - MaxHealth: " + this.maxHealth + " - Speed: " + this.speed + " - Damage: " + this.damage);
         System.out.println();
     }
 
-    public void update(final Game game){
-        final Player player = game.getPlayMenu().getPlayer();
+    public void update(final Game game) {
+        collision = false;
 
-        if(this.health <= 0){
+        if (this.health <= 0) {
             game.getPlayMenu().getEnemyManager().getEnemies().remove(this);
-            player.gainExperience(this.expGain);
+            game.getPlayMenu().getPlayer().gainExperience(this.expGain);
         }
 
-        long currentTime = System.currentTimeMillis(), attackCooldown = 1000;
+        if(!collision){
+            final float
+                    playerX = game.getPlayMenu().getPlayer().getScreenX(),
+                    playerY = game.getPlayMenu().getPlayer().getScreenY();
 
-        if(currentTime - lastAttackTime >= attackCooldown) {
-            if(player.isInAttackRange(this)) {
-                player.setHealth(player.getHealth() - this.damage);
-                lastAttackTime = currentTime;
-            }
+            float
+                    deltaX = playerX - this.getAbsoluteX(),
+                    deltaY = playerY - this.getAbsoluteY();
+
+            final float length = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            deltaX /= length;
+            deltaY /= length;
+
+            this.setAbsoluteX(this.getAbsoluteX() + (float) (deltaX * this.speed));
+            this.setAbsoluteY(this.getAbsoluteY() + (float) (deltaY * this.speed));
         }
-
-        float playerX = player.getScreenX(),
-                playerY = player.getScreenY(),
-
-                deltaX = playerX - this.x,
-                deltaY = playerY - this.y,
-
-                distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY),
-
-                directionX = deltaX / distance, directionY = deltaY / distance;
-
-        this.x += (float) (directionX * speed);
-        this.y += (float) (directionY * speed);
-
     }
 
     public abstract void render(final Graphics graphics);
 
     public void showHealth(final Graphics graphics){
         graphics.setColor(Color.RED);
-        graphics.fillRect((int) this.x + 7, (int) this.y - 10, (int) this.maxHealth, 5);
+        graphics.fillRect((int) this.getAbsoluteX() + 25, (int) this.getAbsoluteY() + 15, (int) this.maxHealth, 5);
         graphics.setColor(Color.GREEN);
-        graphics.fillRect((int) this.x + 7, (int) this.y - 10, (int) this.health, 5);
+        graphics.fillRect((int) this.getAbsoluteX() + 25, (int) this.getAbsoluteY() + 15, (int) this.health, 5);
     }
 
     public void receiveDamage(final Player player){
         this.health = this.health - player.getDamage();
         Game.log(Colors.RED + "Enemy: " + this.getClass().getSimpleName() + " | Health: " + this.health);
     }
+
+    public float getAbsoluteX(){
+        final Player player = this.game.getPlayMenu().getPlayer();
+        return this.x - player.getWorldX() + player.getScreenX();
+    }
+
+    public void setAbsoluteX(final float x){
+        final Player player = this.game.getPlayMenu().getPlayer();
+        this.x = x - player.getScreenX() + player.getWorldX();
+    }
+
+    public float getAbsoluteY() {
+        final Player player = this.game.getPlayMenu().getPlayer();
+        return this.y - player.getWorldY() + player.getScreenY();
+    }
+
+    public void setAbsoluteY(final float y) {
+        final Player player = this.game.getPlayMenu().getPlayer();
+        this.y = y - player.getScreenY() + player.getWorldY();
+    }
+
 }

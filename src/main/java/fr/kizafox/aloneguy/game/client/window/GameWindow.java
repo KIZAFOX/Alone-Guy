@@ -31,7 +31,7 @@ public class GameWindow extends JFrame {
      */
     public GameWindow(final GamePanel gamePanel) throws HeadlessException {
         Game.log("Game window loading...");
-        this.setTitle(NAME + " - " + VERSION);
+        this.setTitle(NAME);
         this.add(gamePanel);
         this.pack();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
