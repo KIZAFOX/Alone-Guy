@@ -54,6 +54,13 @@ public class Player extends Entity {
             this.initAttackBox(screenX + 2 * TILES_SIZE, screenY + 15, 45, 60);
         }
 
+        if (levelUpMessageDisplayed && System.currentTimeMillis() - levelUpDisplayTime < levelUpDisplayDuration) {
+            graphics.setColor(Color.YELLOW);
+            renderText(graphics, levelUpMessage, 15, Color.YELLOW, screenX + 25, screenY - 10);
+        } else {
+            levelUpMessageDisplayed = false;
+        }
+
         if(showMap) this.game.getPlayMenu().getMap().render(graphics);
         if(showMinimap) this.game.getPlayMenu().getMap().renderMinimap(graphics);
     }
@@ -80,13 +87,6 @@ public class Player extends Entity {
         this.setExpToNextLevel(100);
 
         this.resetBooleans();
-    }
-
-    public boolean isInAttackRange(EnemyHandler enemy) {
-        final int deltaX = (int) Math.abs(enemy.x - this.getScreenX());
-        final int deltaY = (int) Math.abs(enemy.y - this.getScreenY());
-
-        return deltaX < 100 && deltaY < 100;
     }
 
     private void loadAnimations() {
@@ -168,6 +168,12 @@ public class Player extends Entity {
         collision = false;
 
         this.game.getCollisionChecker().checkTile(this);
+
+        this.game.getPlayMenu().getEnemyManager().getEnemies().forEach(enemies -> {
+            if(enemies != null) {
+                this.game.getCollisionChecker().checkEntity(enemies, this);
+            }
+        });
 
         if (!collision) {
             float speedX = 0, speedY = 0;

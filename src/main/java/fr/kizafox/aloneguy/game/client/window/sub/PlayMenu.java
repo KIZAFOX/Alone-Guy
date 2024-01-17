@@ -10,12 +10,14 @@ import fr.kizafox.aloneguy.game.world.tile.TileManager;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Timer;
 
 import static fr.kizafox.aloneguy.game.utils.GameSettings.*;
 
 public class PlayMenu extends WindowAbstract implements ActionListener{
 
     protected final Game game;
+    protected final Timer timer;
 
     protected final TileManager tileManager;
 
@@ -27,6 +29,7 @@ public class PlayMenu extends WindowAbstract implements ActionListener{
 
     public PlayMenu(final Game game){
         this.game = game;
+        this.timer = new Timer();
 
         this.tileManager = new TileManager(this.game);
 
@@ -49,12 +52,14 @@ public class PlayMenu extends WindowAbstract implements ActionListener{
         this.player.render(graphics);
         this.enemyManager.render(graphics);
 
-        renderText(graphics, this.time.getFormattedTime(), 30, Color.WHITE, GAME_WIDTH - 210, 35);
+        renderText(graphics,"Level: " + player.getLevel() + " " + this.time.getFormattedTime(), 30, Color.WHITE, GAME_WIDTH - 270, 35);
     }
 
     public void init(){
         this.time = new Time();
         this.map = new Map(this.game);
+
+        this.timer.schedule(this.enemyManager.spawnEnemy(), 0, 1000);
     }
 
     public void reset(GameState gameState) {

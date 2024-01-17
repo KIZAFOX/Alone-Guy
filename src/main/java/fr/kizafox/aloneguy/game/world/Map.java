@@ -1,6 +1,7 @@
 package fr.kizafox.aloneguy.game.world;
 
 import fr.kizafox.aloneguy.game.client.window.Game;
+import fr.kizafox.aloneguy.game.entity.enemy.EnemyHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

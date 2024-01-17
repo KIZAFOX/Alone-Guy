@@ -14,9 +14,11 @@ public abstract class Entity {
     protected float worldX, worldY, speed = 1.20F * SCALE;
     protected int screenX, screenY;
     protected int width, height;
-    protected double maxHealth, health;
-    protected int damage;
+    protected double maxHealth, health, damage;
     protected int currentExp = 50, level = 1, expToNextLevel = 100;
+    protected boolean levelUpMessageDisplayed = false;
+    protected String levelUpMessage;
+    protected long levelUpDisplayTime, levelUpDisplayDuration = 3000;
     protected Rectangle hitBox, attackBox;
     protected int solidAreaDefaultX, solidAreaDefaultY;
 
@@ -28,7 +30,7 @@ public abstract class Entity {
     public int animationTick, animationIndex, animationSpeed;
     public int playerState = Constants.PlayerState.IDLE;
 
-    public Entity(float worldX, float worldY, int width, int height, double maxHealth, int damage) {
+    public Entity(float worldX, float worldY, int width, int height, double maxHealth, double damage) {
         this.worldX = worldX;
         this.worldY = worldY;
         this.width = width;
@@ -148,11 +150,11 @@ public abstract class Entity {
         this.health = health;
     }
 
-    public int getDamage() {
+    public double getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public void setDamage(double damage) {
         this.damage = damage;
     }
 
@@ -187,12 +189,19 @@ public abstract class Entity {
     public void gainExperience(int experience){
         this.currentExp += experience;
 
-        if(this.currentExp >= this.expToNextLevel){
+        if(this.willLevelUp()){
             currentExp = 0;
             level++;
-            Game.log("Congratulations! You leveled up to level " + level + ".");
             expToNextLevel = level * 100;
+
+            levelUpMessage = "LEVEL UP!";
+            levelUpMessageDisplayed = true;
+            levelUpDisplayTime = System.currentTimeMillis();
         }
+    }
+
+    public boolean willLevelUp(){
+        return this.currentExp >= this.expToNextLevel;
     }
 
     public Rectangle getHitBox() {

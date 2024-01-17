@@ -18,7 +18,7 @@ public class GitHubAPI {
 
     public static void connect() {
         try {
-            gitHub = new GitHubBuilder().withOAuthToken("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").build();
+            gitHub = new GitHubBuilder().withOAuthToken("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").build();
             repository = gitHub.getRepository("KIZAFOX/AloneGuy");
             commits = repository.listCommits();
             commit = commits.iterator().next();
